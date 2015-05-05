@@ -1,5 +1,5 @@
 //
-//  ViewController.h
+//  HotelListViewController.h
 //  HotelReservations
 //
 //  Created by Josh Nagel on 5/4/15.
@@ -8,8 +8,6 @@
 
 #import <UIKit/UIKit.h>
 
-@interface ViewController : UIViewController
-
+@interface HotelListViewController : UIViewController
 
 @end
-

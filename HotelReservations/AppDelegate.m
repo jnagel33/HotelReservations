@@ -7,6 +7,9 @@
 //
 
 #import "AppDelegate.h"
+#import "HotelListViewController.h"
+#import "Hotel.h"
+#import "Room.h"
 
 @interface AppDelegate ()
 
@@ -16,7 +19,53 @@
 
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
-  // Override point for customization after application launch.
+  self.window = [[UIWindow alloc]initWithFrame:[UIScreen mainScreen].bounds];
+  [self.window makeKeyAndVisible];
+  HotelListViewController *hotelVC = [[HotelListViewController alloc]init];
+  UINavigationController *navController = [[UINavigationController alloc]initWithRootViewController:hotelVC];
+  self.window.rootViewController = navController;
+
+//  NSString *filePath = [[NSBundle mainBundle]pathForResource:@"seed" ofType:@"json"];
+//  NSData *data = [NSData dataWithContentsOfFile:filePath];
+//  NSError *error;
+//  NSDictionary *jsonObject = [NSJSONSerialization JSONObjectWithData:data options:0 error:&error];
+//  NSArray *hotels = jsonObject[@"Hotels"];
+//  for (NSDictionary *hotel in hotels) {
+//    Hotel *newHotel = [NSEntityDescription insertNewObjectForEntityForName:@"Hotel" inManagedObjectContext:self.managedObjectContext];
+//    newHotel.name = hotel[@"name"];
+//    newHotel.location = hotel[@"location"];
+//    NSNumber *starsNum = hotel[@"stars"];
+//    newHotel.stars = starsNum.intValue;
+//    NSArray *rooms = hotel[@"rooms"];
+//    NSMutableSet *hotelRooms = [[NSMutableSet alloc]init];
+//    for (NSDictionary *room in rooms) {
+//      Room *newRoom = [NSEntityDescription insertNewObjectForEntityForName:@"Room" inManagedObjectContext:self.managedObjectContext];
+//      NSNumber *number = room[@"number"];
+//      newRoom.number = number.intValue;
+//      NSNumber *beds = room[@"beds"];
+//      newRoom.beds = beds.intValue;
+//      NSNumber *rate = room[@"rate"];
+//      newRoom.rate = rate.intValue;
+//      newRoom.hotel = newHotel;
+//      [hotelRooms addObject:newRoom];
+//    }
+//    newHotel.rooms = hotelRooms;
+//  }
+//  NSError *saveError;
+//  [self.managedObjectContext save:&error];
+//  if (saveError) {
+//    NSLog(@"%@", saveError.localizedDescription);
+//  }
+//  
+//  
+//  
+//  
+//  
+//  NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:@"Hotel"];
+//  NSError *fetchError;
+//  NSArray *myHotels = [self.managedObjectContext executeFetchRequest:fetchRequest error:&fetchError];
+//  NSLog(@"%lu", (unsigned long)myHotels.count);
+  
   return YES;
 }
 
