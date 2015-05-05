@@ -9,6 +9,7 @@
 #import "RoomsListViewController.h"
 #import "Hotel.h"
 #import "Room.h"
+#import "RoomTableViewCell.h"
 
 @interface RoomsListViewController () <UITableViewDataSource>
 
@@ -33,9 +34,8 @@
 - (void)viewDidLoad {
   [super viewDidLoad];
   self.navigationItem.title = self.hotel.name;
-  [self.tableView registerClass:[UITableViewCell class] forCellReuseIdentifier:@"RoomCell"];
+  [self.tableView registerClass:[RoomTableViewCell class] forCellReuseIdentifier:@"RoomCell"];
   self.tableView.dataSource = self;
-  
 }
 
 -(void)setConstraintsForRootView:(UIView *)view withView:(NSDictionary *)dictionary {
@@ -54,9 +54,11 @@
 }
 
 -(UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-  UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"RoomCell" forIndexPath:indexPath];
+  RoomTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"RoomCell" forIndexPath:indexPath];
+  cell = [cell initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"RoomCell"];
   Room *room = self.rooms[indexPath.row];
-  cell.textLabel.text = [NSString stringWithFormat:@"%hd",room.number];
+  cell.rateLabel.text = [NSString stringWithFormat:@"$%hd",room.rate];
+  cell.bedsLabel.text = [NSString stringWithFormat:@"%hd beds", room.beds];
   return cell;
 }
 

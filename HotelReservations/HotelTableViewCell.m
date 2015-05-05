@@ -10,34 +10,32 @@
 
 @implementation HotelTableViewCell
 
-
--(void)layoutSubviews {
-  self.nameLabel.translatesAutoresizingMaskIntoConstraints = false;
-  self.nameLabel = [[UILabel alloc]initWithFrame:CGRectMake(8, 8, 100, 20)];
-  [self.contentView addSubview:self.nameLabel];
-  self.locationLabel.translatesAutoresizingMaskIntoConstraints = false;
-  self.locationLabel = [[UILabel alloc]init];
-  self.locationLabel.backgroundColor = [UIColor blueColor];
-  [self.contentView addSubview:self.locationLabel];
-  NSDictionary *views = @{@"nameLabel":self.nameLabel, @"locationLabel":self.locationLabel};
-  [self setConstraintsForRootView:self.contentView withView:views];
-  [self.contentView layoutIfNeeded];
-}
-
-- (void)awakeFromNib {
-    // Initialization code
-}
-
-- (void)setSelected:(BOOL)selected animated:(BOOL)animated {
-    [super setSelected:selected animated:animated];
-
-    // Configure the view for the selected state
+- (id)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier
+{
+  self = [super initWithStyle:UITableViewCellStyleDefault reuseIdentifier:reuseIdentifier];
+  if (self)
+  {
+    self.nameLabel = [[UILabel alloc]init];
+    self.nameLabel.translatesAutoresizingMaskIntoConstraints = false;
+    [self.contentView addSubview:self.nameLabel];
+    self.roomCountLabel = [[UILabel alloc]init];
+    self.roomCountLabel.textColor = [UIColor redColor];
+    self.roomCountLabel.translatesAutoresizingMaskIntoConstraints = false;
+    [self.contentView addSubview:self.roomCountLabel];
+    self.locationLabel = [[UILabel alloc]init];
+    self.locationLabel.translatesAutoresizingMaskIntoConstraints = false;
+    [self.contentView addSubview:self.locationLabel];
+    NSDictionary *views = @{@"nameLabel":self.nameLabel, @"locationLabel":self.locationLabel, @"roomCountLabel": self.roomCountLabel};
+    [self setConstraintsForContentViewWithViews:views];
+  }
+  return self;
 }
 
 //MARK: Constraints
 
--(void)setConstraintsForRootView:(UIView *)view withView:(NSDictionary *)views {
-  NSArray *hNameLayoutConstraint = [NSLayoutConstraint constraintsWithVisualFormat:@"H:|-8-[nameLabel]" options:0 metrics:nil views:views];
+-(void)setConstraintsForContentViewWithViews:(NSDictionary *)views {
+  
+  NSArray *hNameLayoutConstraint = [NSLayoutConstraint constraintsWithVisualFormat:@"H:|-8-[nameLabel]-8-[roomCountLabel]" options:0 metrics:nil views:views];
   [self.contentView addConstraints:hNameLayoutConstraint];
   NSArray *vNameLayoutConstraint = [NSLayoutConstraint constraintsWithVisualFormat:@"V:|-8-[nameLabel]" options:0 metrics:nil views:views];
   [self.contentView addConstraints:vNameLayoutConstraint];
@@ -46,6 +44,9 @@
   [self.contentView addConstraints:hLocationLayoutConstraint];
   NSArray *vLocationLayoutConstraint = [NSLayoutConstraint constraintsWithVisualFormat:@"V:|-8-[locationLabel]" options:0 metrics:nil views:views];
   [self.contentView addConstraints:vLocationLayoutConstraint];
+  
+  NSArray *vRoomCountLabel = [NSLayoutConstraint constraintsWithVisualFormat:@"V:|-8-[roomCountLabel]" options:0 metrics:nil views:views];
+  [self.contentView addConstraints:vRoomCountLabel];
 }
 
 @end

@@ -56,10 +56,7 @@
 //  if (saveError) {
 //    NSLog(@"%@", saveError.localizedDescription);
 //  }
-//  
-//  
-//  
-//  
+//
 //  
 //  NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:@"Hotel"];
 //  NSError *fetchError;

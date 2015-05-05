@@ -12,5 +12,6 @@
 
 @property(strong,nonatomic)UILabel *nameLabel;
 @property(strong,nonatomic)UILabel *locationLabel;
+@property(strong,nonatomic)UILabel *roomCountLabel;
 
 @end

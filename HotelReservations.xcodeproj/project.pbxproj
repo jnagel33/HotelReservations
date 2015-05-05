@@ -7,6 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		430FB1241AF93B7700B35A97 /* HotelHeaderView.m in Sources */ = {isa = PBXBuildFile; fileRef = 430FB1231AF93B7700B35A97 /* HotelHeaderView.m */; };
+		430FB1271AF93CE600B35A97 /* HotelReservationsStyleKit.m in Sources */ = {isa = PBXBuildFile; fileRef = 430FB1261AF93CE600B35A97 /* HotelReservationsStyleKit.m */; };
+		430FB12D1AF9510B00B35A97 /* RoomTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 430FB12C1AF9510B00B35A97 /* RoomTableViewCell.m */; };
 		435BBAE41AF85E92007200A4 /* Room.m in Sources */ = {isa = PBXBuildFile; fileRef = 435BBAE11AF85E92007200A4 /* Room.m */; };
 		435BBAE51AF85E92007200A4 /* Hotel.m in Sources */ = {isa = PBXBuildFile; fileRef = 435BBAE31AF85E92007200A4 /* Hotel.m */; };
 		435BBAE81AF86E6E007200A4 /* RoomsListViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 435BBAE71AF86E6E007200A4 /* RoomsListViewController.m */; };
@@ -33,6 +36,12 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		430FB1221AF93B7700B35A97 /* HotelHeaderView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HotelHeaderView.h; sourceTree = "<group>"; };
+		430FB1231AF93B7700B35A97 /* HotelHeaderView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HotelHeaderView.m; sourceTree = "<group>"; };
+		430FB1251AF93CE600B35A97 /* HotelReservationsStyleKit.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HotelReservationsStyleKit.h; sourceTree = SOURCE_ROOT; };
+		430FB1261AF93CE600B35A97 /* HotelReservationsStyleKit.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HotelReservationsStyleKit.m; sourceTree = SOURCE_ROOT; };
+		430FB12B1AF9510B00B35A97 /* RoomTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = RoomTableViewCell.h; path = ../RoomTableViewCell.h; sourceTree = "<group>"; };
+		430FB12C1AF9510B00B35A97 /* RoomTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = RoomTableViewCell.m; path = ../RoomTableViewCell.m; sourceTree = "<group>"; };
 		435BBAE01AF85E92007200A4 /* Room.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Room.h; sourceTree = "<group>"; };
 		435BBAE11AF85E92007200A4 /* Room.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Room.m; sourceTree = "<group>"; };
 		435BBAE21AF85E92007200A4 /* Hotel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Hotel.h; sourceTree = "<group>"; };
@@ -76,6 +85,48 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		430FB12E1AF954E300B35A97 /* View */ = {
+			isa = PBXGroup;
+			children = (
+				430FB1221AF93B7700B35A97 /* HotelHeaderView.h */,
+				430FB1231AF93B7700B35A97 /* HotelHeaderView.m */,
+				430FB12B1AF9510B00B35A97 /* RoomTableViewCell.h */,
+				430FB12C1AF9510B00B35A97 /* RoomTableViewCell.m */,
+				430FB1251AF93CE600B35A97 /* HotelReservationsStyleKit.h */,
+				430FB1261AF93CE600B35A97 /* HotelReservationsStyleKit.m */,
+				435BBAE91AF876A3007200A4 /* HotelTableViewCell.h */,
+				435BBAEA1AF876A3007200A4 /* HotelTableViewCell.m */,
+				435BD8E21AF83D540059CF7C /* Main.storyboard */,
+				435BD8E51AF83D540059CF7C /* Images.xcassets */,
+				435BD8E71AF83D540059CF7C /* LaunchScreen.xib */,
+			);
+			name = View;
+			sourceTree = "<group>";
+		};
+		430FB12F1AF954FB00B35A97 /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				435BBAE01AF85E92007200A4 /* Room.h */,
+				435BBAE11AF85E92007200A4 /* Room.m */,
+				435BBAE21AF85E92007200A4 /* Hotel.h */,
+				435BBAE31AF85E92007200A4 /* Hotel.m */,
+				435BD9011AF84DE80059CF7C /* seed.json */,
+				435BD8DC1AF83D540059CF7C /* HotelReservations.xcdatamodeld */,
+			);
+			name = Model;
+			sourceTree = "<group>";
+		};
+		430FB1301AF9550600B35A97 /* Controller */ = {
+			isa = PBXGroup;
+			children = (
+				435BD8FE1AF848E30059CF7C /* HotelListViewController.h */,
+				435BD8FF1AF848E30059CF7C /* HotelListViewController.m */,
+				435BBAE61AF86E6E007200A4 /* RoomsListViewController.h */,
+				435BBAE71AF86E6E007200A4 /* RoomsListViewController.m */,
+			);
+			name = Controller;
+			sourceTree = "<group>";
+		};
 		435BD8C91AF83D540059CF7C = {
 			isa = PBXGroup;
 			children = (
@@ -97,23 +148,11 @@
 		435BD8D41AF83D540059CF7C /* HotelReservations */ = {
 			isa = PBXGroup;
 			children = (
-				435BBAE01AF85E92007200A4 /* Room.h */,
-				435BBAE11AF85E92007200A4 /* Room.m */,
-				435BBAE21AF85E92007200A4 /* Hotel.h */,
-				435BBAE31AF85E92007200A4 /* Hotel.m */,
 				435BD8D91AF83D540059CF7C /* AppDelegate.h */,
 				435BD8DA1AF83D540059CF7C /* AppDelegate.m */,
-				435BD9011AF84DE80059CF7C /* seed.json */,
-				435BD8FE1AF848E30059CF7C /* HotelListViewController.h */,
-				435BD8FF1AF848E30059CF7C /* HotelListViewController.m */,
-				435BBAE91AF876A3007200A4 /* HotelTableViewCell.h */,
-				435BBAEA1AF876A3007200A4 /* HotelTableViewCell.m */,
-				435BBAE61AF86E6E007200A4 /* RoomsListViewController.h */,
-				435BBAE71AF86E6E007200A4 /* RoomsListViewController.m */,
-				435BD8E21AF83D540059CF7C /* Main.storyboard */,
-				435BD8E51AF83D540059CF7C /* Images.xcassets */,
-				435BD8E71AF83D540059CF7C /* LaunchScreen.xib */,
-				435BD8DC1AF83D540059CF7C /* HotelReservations.xcdatamodeld */,
+				430FB12E1AF954E300B35A97 /* View */,
+				430FB12F1AF954FB00B35A97 /* Model */,
+				430FB1301AF9550600B35A97 /* Controller */,
 				435BD8D51AF83D540059CF7C /* Supporting Files */,
 			);
 			path = HotelReservations;
@@ -246,11 +285,14 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				430FB12D1AF9510B00B35A97 /* RoomTableViewCell.m in Sources */,
 				435BBAE51AF85E92007200A4 /* Hotel.m in Sources */,
 				435BBAE41AF85E92007200A4 /* Room.m in Sources */,
+				430FB1271AF93CE600B35A97 /* HotelReservationsStyleKit.m in Sources */,
 				435BD8DB1AF83D540059CF7C /* AppDelegate.m in Sources */,
 				435BBAE81AF86E6E007200A4 /* RoomsListViewController.m in Sources */,
 				435BD8DE1AF83D540059CF7C /* HotelReservations.xcdatamodeld in Sources */,
+				430FB1241AF93B7700B35A97 /* HotelHeaderView.m in Sources */,
 				435BD8D81AF83D540059CF7C /* main.m in Sources */,
 				435BBAEB1AF876A3007200A4 /* HotelTableViewCell.m in Sources */,
 				435BD9001AF848E30059CF7C /* HotelListViewController.m in Sources */,
