@@ -13,25 +13,40 @@
 
 @implementation HotelReservationsStyleKit
 
+#pragma mark Cache
+
+static UIColor* _gradientColor = nil;
+static UIColor* _gradientColor2 = nil;
+
 #pragma mark Initialization
 
 + (void)initialize
 {
+    // Colors Initialization
+    _gradientColor = [UIColor colorWithRed: 0.523 green: 0.739 blue: 0.344 alpha: 1];
+    _gradientColor2 = [UIColor colorWithRed: 0.145 green: 0.321 blue: 0.058 alpha: 1];
+
 }
+
+#pragma mark Colors
+
++ (UIColor*)gradientColor { return _gradientColor; }
++ (UIColor*)gradientColor2 { return _gradientColor2; }
 
 #pragma mark Drawing Methods
 
 + (void)drawSectionHeaderWithFrame: (CGRect)frame
 {
+    //// General Declarations
     CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceRGB();
     CGContextRef context = UIGraphicsGetCurrentContext();
 
-    UIColor* gradientColor = [UIColor colorWithRed: 0.523 green: 0.739 blue: 0.344 alpha: 1];
-    UIColor* gradientColor2 = [UIColor colorWithRed: 0.145 green: 0.321 blue: 0.058 alpha: 1];
 
+    //// Gradient Declarations
     CGFloat gradientLocations[] = {0, 1};
-    CGGradientRef gradient = CGGradientCreateWithColors(colorSpace, (__bridge CFArrayRef)@[(id)gradientColor.CGColor, (id)gradientColor2.CGColor], gradientLocations);
+    CGGradientRef gradient = CGGradientCreateWithColors(colorSpace, (__bridge CFArrayRef)@[(id)HotelReservationsStyleKit.gradientColor.CGColor, (id)HotelReservationsStyleKit.gradientColor2.CGColor], gradientLocations);
 
+    //// Rectangle Drawing
     CGRect rectangleRect = CGRectMake(CGRectGetMinX(frame), CGRectGetMinY(frame), CGRectGetWidth(frame), CGRectGetHeight(frame));
     UIBezierPath* rectanglePath = [UIBezierPath bezierPathWithRect: rectangleRect];
     CGContextSaveGState(context);
@@ -43,8 +58,23 @@
         kCGGradientDrawsBeforeStartLocation | kCGGradientDrawsAfterEndLocation);
     CGContextRestoreGState(context);
 
+
+    //// Cleanup
     CGGradientRelease(gradient);
     CGColorSpaceRelease(colorSpace);
+}
+
+#pragma mark Generated Images
+
++ (UIImage*)imageOfSectionHeaderWithFrame: (CGRect)frame
+{
+    UIGraphicsBeginImageContextWithOptions(frame.size, NO, 0.0f);
+    [HotelReservationsStyleKit drawSectionHeaderWithFrame: frame];
+
+    UIImage* imageOfSectionHeader = UIGraphicsGetImageFromCurrentImageContext();
+    UIGraphicsEndImageContext();
+
+    return imageOfSectionHeader;
 }
 
 @end

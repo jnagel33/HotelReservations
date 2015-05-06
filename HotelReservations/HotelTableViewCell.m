@@ -37,15 +37,15 @@
   
   NSArray *hNameLayoutConstraint = [NSLayoutConstraint constraintsWithVisualFormat:@"H:|-8-[nameLabel]-8-[roomCountLabel]" options:0 metrics:nil views:views];
   [self.contentView addConstraints:hNameLayoutConstraint];
-  NSArray *vNameLayoutConstraint = [NSLayoutConstraint constraintsWithVisualFormat:@"V:|-8-[nameLabel]" options:0 metrics:nil views:views];
+  NSArray *vNameLayoutConstraint = [NSLayoutConstraint constraintsWithVisualFormat:@"V:|-12-[nameLabel]" options:0 metrics:nil views:views];
   [self.contentView addConstraints:vNameLayoutConstraint];
   
   NSArray *hLocationLayoutConstraint = [NSLayoutConstraint constraintsWithVisualFormat:@"H:[locationLabel]-8-|" options:0 metrics:nil views:views];
   [self.contentView addConstraints:hLocationLayoutConstraint];
-  NSArray *vLocationLayoutConstraint = [NSLayoutConstraint constraintsWithVisualFormat:@"V:|-8-[locationLabel]" options:0 metrics:nil views:views];
+  NSArray *vLocationLayoutConstraint = [NSLayoutConstraint constraintsWithVisualFormat:@"V:|-12-[locationLabel]" options:0 metrics:nil views:views];
   [self.contentView addConstraints:vLocationLayoutConstraint];
   
-  NSArray *vRoomCountLabel = [NSLayoutConstraint constraintsWithVisualFormat:@"V:|-8-[roomCountLabel]" options:0 metrics:nil views:views];
+  NSArray *vRoomCountLabel = [NSLayoutConstraint constraintsWithVisualFormat:@"V:|-12-[roomCountLabel]" options:0 metrics:nil views:views];
   [self.contentView addConstraints:vRoomCountLabel];
 }
 

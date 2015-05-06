@@ -14,7 +14,14 @@
 
 @interface HotelReservationsStyleKit : NSObject
 
+// Colors
++ (UIColor*)gradientColor;
++ (UIColor*)gradientColor2;
+
 // Drawing Methods
 + (void)drawSectionHeaderWithFrame: (CGRect)frame;
+
+// Generated Images
++ (UIImage*)imageOfSectionHeaderWithFrame: (CGRect)frame;
 
 @end

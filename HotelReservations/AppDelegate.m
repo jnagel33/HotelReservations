@@ -7,7 +7,8 @@
 //
 
 #import "AppDelegate.h"
-#import "HotelListViewController.h"
+//#import "HotelListViewController.h"
+#import "MainMenuTableViewController.h"
 #import "Hotel.h"
 #import "Room.h"
 
@@ -21,8 +22,9 @@
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
   self.window = [[UIWindow alloc]initWithFrame:[UIScreen mainScreen].bounds];
   [self.window makeKeyAndVisible];
-  HotelListViewController *hotelVC = [[HotelListViewController alloc]init];
-  UINavigationController *navController = [[UINavigationController alloc]initWithRootViewController:hotelVC];
+//  HotelListViewController *hotelVC = [[HotelListViewController alloc]init];
+  MainMenuTableViewController *mainVC = [[MainMenuTableViewController alloc]init];
+  UINavigationController *navController = [[UINavigationController alloc]initWithRootViewController:mainVC];
   self.window.rootViewController = navController;
 
 //  NSString *filePath = [[NSBundle mainBundle]pathForResource:@"seed" ofType:@"json"];
@@ -37,7 +39,6 @@
 //    NSNumber *starsNum = hotel[@"stars"];
 //    newHotel.stars = starsNum.intValue;
 //    NSArray *rooms = hotel[@"rooms"];
-//    NSMutableSet *hotelRooms = [[NSMutableSet alloc]init];
 //    for (NSDictionary *room in rooms) {
 //      Room *newRoom = [NSEntityDescription insertNewObjectForEntityForName:@"Room" inManagedObjectContext:self.managedObjectContext];
 //      NSNumber *number = room[@"number"];
@@ -47,9 +48,7 @@
 //      NSNumber *rate = room[@"rate"];
 //      newRoom.rate = rate.intValue;
 //      newRoom.hotel = newHotel;
-//      [hotelRooms addObject:newRoom];
 //    }
-//    newHotel.rooms = hotelRooms;
 //  }
 //  NSError *saveError;
 //  [self.managedObjectContext save:&error];
