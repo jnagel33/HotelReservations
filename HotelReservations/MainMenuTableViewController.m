@@ -184,7 +184,7 @@
           self.fromDatePicker.alpha = 1;
           [self.tableView reloadData];
         }];
-      } else
+      }
       self.showToDate = !self.showToDate;
       self.toDatePicker.alpha = 0;
       [UIView animateWithDuration:0.4 animations:^{

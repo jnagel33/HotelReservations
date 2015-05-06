@@ -22,7 +22,6 @@ static UIColor* _gradientColor2 = nil;
 
 + (void)initialize
 {
-    // Colors Initialization
     _gradientColor = [UIColor colorWithRed: 0.523 green: 0.739 blue: 0.344 alpha: 1];
     _gradientColor2 = [UIColor colorWithRed: 0.145 green: 0.321 blue: 0.058 alpha: 1];
 
@@ -37,16 +36,12 @@ static UIColor* _gradientColor2 = nil;
 
 + (void)drawSectionHeaderWithFrame: (CGRect)frame
 {
-    //// General Declarations
     CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceRGB();
     CGContextRef context = UIGraphicsGetCurrentContext();
 
-
-    //// Gradient Declarations
     CGFloat gradientLocations[] = {0, 1};
     CGGradientRef gradient = CGGradientCreateWithColors(colorSpace, (__bridge CFArrayRef)@[(id)HotelReservationsStyleKit.gradientColor.CGColor, (id)HotelReservationsStyleKit.gradientColor2.CGColor], gradientLocations);
 
-    //// Rectangle Drawing
     CGRect rectangleRect = CGRectMake(CGRectGetMinX(frame), CGRectGetMinY(frame), CGRectGetWidth(frame), CGRectGetHeight(frame));
     UIBezierPath* rectanglePath = [UIBezierPath bezierPathWithRect: rectangleRect];
     CGContextSaveGState(context);
@@ -58,8 +53,6 @@ static UIColor* _gradientColor2 = nil;
         kCGGradientDrawsBeforeStartLocation | kCGGradientDrawsAfterEndLocation);
     CGContextRestoreGState(context);
 
-
-    //// Cleanup
     CGGradientRelease(gradient);
     CGColorSpaceRelease(colorSpace);
 }
