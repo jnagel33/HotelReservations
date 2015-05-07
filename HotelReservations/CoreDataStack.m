@@ -8,6 +8,12 @@
 
 #import "CoreDataStack.h"
 
+@interface CoreDataStack()
+
+@property(nonatomic)BOOL isForTesting;
+
+@end
+
 @implementation CoreDataStack
 
 #pragma mark - Core Data stack
@@ -15,6 +21,13 @@
 @synthesize managedObjectContext = _managedObjectContext;
 @synthesize managedObjectModel = _managedObjectModel;
 @synthesize persistentStoreCoordinator = _persistentStoreCoordinator;
+
+-(instancetype)initForTesting {
+  if (self = [super init]) {
+    self.isForTesting = true;
+  }
+  return self;
+}
 
 - (NSURL *)applicationDocumentsDirectory {
   // The directory the application uses to store the Core Data store file. This code uses a directory named "com.jnagel.HotelReservations" in the application's documents directory.
@@ -42,8 +55,15 @@
   _persistentStoreCoordinator = [[NSPersistentStoreCoordinator alloc] initWithManagedObjectModel:[self managedObjectModel]];
   NSURL *storeURL = [[self applicationDocumentsDirectory] URLByAppendingPathComponent:@"HotelReservations.sqlite"];
   NSError *error = nil;
+  NSString *storeType;
   NSString *failureReason = @"There was an error creating or loading the application's saved data.";
-  if (![_persistentStoreCoordinator addPersistentStoreWithType:NSSQLiteStoreType configuration:nil URL:storeURL options:nil error:&error]) {
+  if (self.isForTesting) {
+    storeType = NSInMemoryStoreType;
+  } else {
+    storeType = NSSQLiteStoreType;
+  }
+  
+  if (![_persistentStoreCoordinator addPersistentStoreWithType:storeType configuration:nil URL:storeURL options:nil error:&error]) {
     // Report any error we got.
     NSMutableDictionary *dict = [NSMutableDictionary dictionary];
     dict[NSLocalizedDescriptionKey] = @"Failed to initialize the application's saved data";

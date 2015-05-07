@@ -34,13 +34,13 @@
 }
 
 -(NSFetchedResultsController *) produceFetchResultsControllerForAvailableRoomsFromDate:(NSDate *)fromDate toDate:(NSDate *)toDate withBedCount:(int16_t)bedCount {
+  [NSFetchedResultsController deleteCacheWithName:@"AvailableRoomsCache"];
   NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:@"Reservation"];
   NSPredicate *predicate = [NSPredicate predicateWithFormat:@"startDate <= %@ AND endDate >= %@", toDate, fromDate];
   fetchRequest.predicate = predicate;
   
   NSError *fetchError;
   NSArray *reservations = [self.coreDataStack.managedObjectContext executeFetchRequest:fetchRequest error:&fetchError];
-  
   NSMutableArray *rooms = [[NSMutableArray alloc] init];
   for (Reservation *reservation in reservations) {
     [rooms addObject:reservation.room];
@@ -52,7 +52,7 @@
   NSPredicate *finalPredicate = [NSPredicate predicateWithFormat:@"NOT self IN %@ AND beds >= %@", rooms, @(bedCount)];
   finalRequest.predicate = finalPredicate;
   
-  NSFetchedResultsController *fetchedResultsController = [[NSFetchedResultsController alloc]initWithFetchRequest:finalRequest managedObjectContext:self.coreDataStack.managedObjectContext sectionNameKeyPath:@"hotel.name" cacheName:nil];
+  NSFetchedResultsController *fetchedResultsController = [[NSFetchedResultsController alloc]initWithFetchRequest:finalRequest managedObjectContext:self.coreDataStack.managedObjectContext sectionNameKeyPath:@"hotel.name" cacheName:@"AvailableRoomsCache"];
   
   return fetchedResultsController;
 }

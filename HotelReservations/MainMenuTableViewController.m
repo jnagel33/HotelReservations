@@ -15,6 +15,7 @@
 #import "HotelReservationsStyleKit.h"
 #import "NumberOfBedsTableViewCell.h"
 #import "GuestTableViewController.h"
+#import "DateValidationService.h"
 
 const NSInteger kMaxBedsCount = 3;
 const NSInteger kMinBedsCount = 1;
@@ -36,6 +37,7 @@ const NSInteger kMinBedsCount = 1;
 @property(nonatomic)BOOL showToDate;
 @property(strong,nonatomic)NSDateFormatter *dateFormatter;
 @property(nonatomic)int16_t bedCount;
+
 
 @end
 
@@ -62,9 +64,7 @@ const NSInteger kMinBedsCount = 1;
   self.searchCustomersCell.textLabel.text = @"Search Customers";
   [self.searchCustomersCell setAccessoryType:UITableViewCellAccessoryDisclosureIndicator];
   self.searchButtonCell = [[ButtonTableViewCell alloc]init];
-  
   self.numberOfBedsCell = [[NumberOfBedsTableViewCell alloc]init];
-  
   [self setupConstraints];
 }
 
@@ -72,6 +72,7 @@ const NSInteger kMinBedsCount = 1;
   [super viewDidLoad];
   UILabel *titleLabel = [[UILabel alloc]initWithFrame:CGRectMake(0, 0, 50, 20)];
   titleLabel.textColor = [HotelReservationsStyleKit blueDark];
+  titleLabel.font = [UIFont fontWithName:@"AvenirNext-DemiBold" size:22];
   titleLabel.text = @"Main Menu";
   
   self.navigationItem.titleView = titleLabel;
@@ -91,6 +92,32 @@ const NSInteger kMinBedsCount = 1;
   self.bedCount = 1;
 }
 
+-(void)toggleFromDatePicker:(BOOL)value {
+  if (value) {
+    self.showFromDate = false;
+  } else {
+    self.showFromDate = !self.showFromDate;
+  }
+  self.fromDatePicker.alpha = 0;
+  [UIView animateWithDuration:0.4 animations:^{
+    self.fromDatePicker.alpha = 1;
+    [self.tableView reloadData];
+  }];
+}
+
+-(void)toggleToDatePickerOrSetWith:(BOOL)value {
+  if (value) {
+    self.showToDate = false;
+  } else {
+    self.showToDate = !self.showToDate;
+  }
+  self.toDatePicker.alpha = 0;
+  [UIView animateWithDuration:0.4 animations:^{
+    self.toDatePicker.alpha = 1;
+    [self.tableView reloadData];
+  }];
+}
+
 -(void)plusMinusPressed:(UIButton *)sender {
   if (sender == self.numberOfBedsCell.plusButton) {
     self.bedCount++;
@@ -106,8 +133,15 @@ const NSInteger kMinBedsCount = 1;
 }
 
 -(void)setDates {
-  NSString *fromDateStr = [self.dateFormatter stringFromDate:self.fromDatePicker.date];
-  self.fromCell.dateLabel.text = fromDateStr;
+  self.fromCell.dateLabel.textColor = [UIColor blackColor];
+  self.toCell.dateLabel.textColor = [UIColor blackColor];
+  if ([DateValidationService validateFromDateIsTodayOrLater:self.fromDatePicker.date]) {
+    NSString *fromDateStr = [self.dateFormatter stringFromDate:self.fromDatePicker.date];
+    self.fromCell.dateLabel.text = fromDateStr;
+  } else {
+    self.fromCell.dateLabel.text = @"From date cannot be in the past";
+    self.fromCell.dateLabel.textColor = [UIColor redColor];
+  }
   NSString *toDateStr = [self.dateFormatter stringFromDate:self.toDatePicker.date];
   self.toCell.dateLabel.text = toDateStr;
 }
@@ -217,42 +251,31 @@ const NSInteger kMinBedsCount = 1;
     [self setDates];
     if (indexPath.row == 0) {
       if (self.showToDate) {
-        self.showToDate = !self.showToDate;
-        self.toDatePicker.alpha = 0;
-        [UIView animateWithDuration:0.4 animations:^{
-          self.toDatePicker.alpha = 1;
-          [self.tableView reloadData];
-        }];
+        [self toggleToDatePickerOrSetWith:nil];
       }
-      self.showFromDate = !self.showFromDate;
-      self.fromDatePicker.alpha = 0;
-      [UIView animateWithDuration:0.4 animations:^{
-        self.fromDatePicker.alpha = 1;
-        [self.tableView reloadData];
-      }];
+      [self toggleFromDatePicker:nil];
     } else if (indexPath.row == 2) {
       if (self.showFromDate) {
-        self.showFromDate = !self.showFromDate;
-        self.fromDatePicker.alpha = 0;
-        [UIView animateWithDuration:0.4 animations:^{
-          self.fromDatePicker.alpha = 1;
-          [self.tableView reloadData];
-        }];
+        [self toggleFromDatePicker:nil];
       }
-      self.showToDate = !self.showToDate;
-      self.toDatePicker.alpha = 0;
-      [UIView animateWithDuration:0.4 animations:^{
-        self.toDatePicker.alpha = 1;
-        [self.tableView reloadData];
-      }];
-    } else if (indexPath.row == 5) {
-      self.showFromDate = false;
-      self.showToDate = false;
-      AvailabilityTableViewController *availabilityVC = [[AvailabilityTableViewController alloc]init];
-      availabilityVC.fromDate = self.fromDatePicker.date;
-      availabilityVC.toDate = self.toDatePicker.date;
-      availabilityVC.bedCount = self.bedCount;
-      [self.navigationController pushViewController:availabilityVC animated:true];
+      [self toggleToDatePickerOrSetWith:nil];
+    } else if (indexPath.row == 4 || indexPath.row == 5) {
+      [self toggleFromDatePicker:true];
+      [self toggleToDatePickerOrSetWith:true];
+      if (indexPath.row == 5) {
+        if ([DateValidationService validateFromDateIsTodayOrLater:self.fromDatePicker.date]) {
+          if ([DateValidationService validateFromDate:self.fromDatePicker.date AndToDate:self.toDatePicker.date]) {
+            AvailabilityTableViewController *availabilityVC = [[AvailabilityTableViewController alloc]init];
+            availabilityVC.fromDate = self.fromDatePicker.date;
+            availabilityVC.toDate = self.toDatePicker.date;
+            availabilityVC.bedCount = self.bedCount;
+            [self.navigationController pushViewController:availabilityVC animated:true];
+          } else {
+            self.toCell.dateLabel.text = @"To Date must be after From Date";
+            self.toCell.dateLabel.textColor = [UIColor redColor];
+          }
+        }
+      }
     }
   } else if (indexPath.section == 1) {
     if (indexPath.row == 0) {

@@ -39,6 +39,7 @@
   [super viewDidLoad];
   UILabel *titleLabel = [[UILabel alloc]initWithFrame:CGRectMake(0, 0, 50, 20)];
   titleLabel.textColor = [HotelReservationsStyleKit blueDark];
+  titleLabel.font = [UIFont fontWithName:@"AvenirNext-DemiBold" size:22];
   titleLabel.text = @"Hotels";
   self.navigationItem.titleView = titleLabel;
   
@@ -46,7 +47,7 @@
   [self.tableView registerClass:[HotelTableViewCell class]forCellReuseIdentifier:@"HotelCell"];
   
   AppDelegate *appDelegate = [UIApplication sharedApplication].delegate;
-    NSArray *allHotels = [appDelegate.hotelService fetchAllHotels];
+  NSArray *allHotels = [appDelegate.hotelService fetchAllHotels];
   self.hotels = [self getSections:allHotels];
   self.tableView.dataSource = self;
 }

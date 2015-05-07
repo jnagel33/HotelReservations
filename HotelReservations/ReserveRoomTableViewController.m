@@ -50,6 +50,7 @@
   
   UILabel *titleLabel = [[UILabel alloc]initWithFrame:CGRectMake(0, 0, 50, 20)];
   titleLabel.textColor = [HotelReservationsStyleKit blueDark];
+  titleLabel.font = [UIFont fontWithName:@"AvenirNext-DemiBold" size:22];
   titleLabel.text = @"Make a Reservation";
   self.navigationItem.titleView = titleLabel;
   

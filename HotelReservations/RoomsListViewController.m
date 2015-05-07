@@ -10,6 +10,7 @@
 #import "Hotel.h"
 #import "Room.h"
 #import "RoomTableViewCell.h"
+#import "HotelReservationsStyleKit.h"
 
 @interface RoomsListViewController () <UITableViewDataSource>
 
@@ -33,7 +34,10 @@
 
 - (void)viewDidLoad {
   [super viewDidLoad];
-  self.navigationItem.title = self.hotel.name;
+  UILabel *titleLabel = [[UILabel alloc]initWithFrame:CGRectMake(0, 0, 50, 20)];
+  titleLabel.textColor = [HotelReservationsStyleKit blueDark];
+  titleLabel.font = [UIFont fontWithName:@"AvenirNext-DemiBold" size:22];
+  titleLabel.text = @"Main Menu";
   [self.tableView registerClass:[RoomTableViewCell class] forCellReuseIdentifier:@"RoomCell"];
   self.tableView.dataSource = self;
 }
@@ -43,7 +47,6 @@
   [view addConstraints:tableViewHorizontalConstraints];
   NSArray *tableViewVerticalConstraints = [NSLayoutConstraint constraintsWithVisualFormat:@"V:|[tableView]|" options:0 metrics:nil views:dictionary];
   [view addConstraints:tableViewVerticalConstraints];
-  
 }
 
 //MARK:

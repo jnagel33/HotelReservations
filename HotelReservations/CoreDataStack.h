@@ -17,5 +17,6 @@
 
 - (void)saveContext;
 - (NSURL *)applicationDocumentsDirectory;
+-(instancetype)initForTesting;
 
 @end

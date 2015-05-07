@@ -20,7 +20,7 @@
 -(instancetype)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier {
   self = [super initWithStyle:UITableViewCellStyleDefault reuseIdentifier:reuseIdentifier];
   if (self) {
-    self.selectionStyle = UITableViewCellEditingStyleNone;
+    self.selectionStyle = UITableViewCellSelectionStyleNone;
     self.customContainerView = [[UIView alloc]init];
     self.customContainerView.translatesAutoresizingMaskIntoConstraints = false;
     self.bedsLabel = [[UILabel alloc]init];

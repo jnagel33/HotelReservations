@@ -36,6 +36,9 @@
 		435BD9021AF84DE80059CF7C /* seed.json in Resources */ = {isa = PBXBuildFile; fileRef = 435BD9011AF84DE80059CF7C /* seed.json */; };
 		43BA5FD01AFB24190056163D /* GuestNameTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 43BA5FCF1AFB24190056163D /* GuestNameTableViewCell.m */; };
 		43BA5FD31AFB39F20056163D /* GuestTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 43BA5FD21AFB39F20056163D /* GuestTableViewController.m */; };
+		43BA5FD51AFBC8960056163D /* HotelServiceTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 43BA5FD41AFBC8960056163D /* HotelServiceTests.m */; };
+		43BA5FD81AFBDE1A0056163D /* DateValidationService.m in Sources */ = {isa = PBXBuildFile; fileRef = 43BA5FD71AFBDE1A0056163D /* DateValidationService.m */; };
+		43BA5FDA1AFBF42B0056163D /* DateValidationServiceTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 43BA5FD91AFBF42B0056163D /* DateValidationServiceTests.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -104,6 +107,10 @@
 		43BA5FCF1AFB24190056163D /* GuestNameTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GuestNameTableViewCell.m; sourceTree = "<group>"; };
 		43BA5FD11AFB39F20056163D /* GuestTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GuestTableViewController.h; sourceTree = "<group>"; };
 		43BA5FD21AFB39F20056163D /* GuestTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GuestTableViewController.m; sourceTree = "<group>"; };
+		43BA5FD41AFBC8960056163D /* HotelServiceTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HotelServiceTests.m; sourceTree = "<group>"; };
+		43BA5FD61AFBDE1A0056163D /* DateValidationService.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DateValidationService.h; sourceTree = "<group>"; };
+		43BA5FD71AFBDE1A0056163D /* DateValidationService.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DateValidationService.m; sourceTree = "<group>"; };
+		43BA5FD91AFBF42B0056163D /* DateValidationServiceTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DateValidationServiceTests.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -159,6 +166,8 @@
 				430B30681AFAF12F006B416B /* CoreDataStack.m */,
 				430B306A1AFAF26F006B416B /* HotelService.h */,
 				430B306B1AFAF26F006B416B /* HotelService.m */,
+				43BA5FD61AFBDE1A0056163D /* DateValidationService.h */,
+				43BA5FD71AFBDE1A0056163D /* DateValidationService.m */,
 				430B305E1AFA8BFA006B416B /* Guest.h */,
 				430B305F1AFA8BFA006B416B /* Guest.m */,
 				430B305B1AFA8BFA006B416B /* Reservation.h */,
@@ -236,6 +245,8 @@
 			isa = PBXGroup;
 			children = (
 				435BD8F41AF83D540059CF7C /* HotelReservationsTests.m */,
+				43BA5FD41AFBC8960056163D /* HotelServiceTests.m */,
+				43BA5FD91AFBF42B0056163D /* DateValidationServiceTests.m */,
 				435BD8F21AF83D540059CF7C /* Supporting Files */,
 			);
 			path = HotelReservationsTests;
@@ -359,6 +370,7 @@
 				435BD8DB1AF83D540059CF7C /* AppDelegate.m in Sources */,
 				430FB1331AF999D600B35A97 /* MainMenuTableViewController.m in Sources */,
 				435BBAE81AF86E6E007200A4 /* RoomsListViewController.m in Sources */,
+				43BA5FD81AFBDE1A0056163D /* DateValidationService.m in Sources */,
 				435BD8DE1AF83D540059CF7C /* HotelReservations.xcdatamodeld in Sources */,
 				430B30631AFA9BE2006B416B /* NumberOfBedsTableViewCell.m in Sources */,
 				43BA5FD01AFB24190056163D /* GuestNameTableViewCell.m in Sources */,
@@ -381,6 +393,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				43BA5FDA1AFBF42B0056163D /* DateValidationServiceTests.m in Sources */,
+				43BA5FD51AFBC8960056163D /* HotelServiceTests.m in Sources */,
 				435BD8F51AF83D540059CF7C /* HotelReservationsTests.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

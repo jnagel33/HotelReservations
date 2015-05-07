@@ -37,6 +37,7 @@
   
   UILabel *titleLabel = [[UILabel alloc]initWithFrame:CGRectMake(0, 0, 50, 20)];
   titleLabel.textColor = [HotelReservationsStyleKit blueDark];
+  titleLabel.font = [UIFont fontWithName:@"AvenirNext-DemiBold" size:22];
   titleLabel.text = [NSString stringWithFormat:@"%@th to %@th", fromDateStr, toDateStr];
   self.navigationItem.titleView = titleLabel;
   
@@ -87,7 +88,6 @@
 //MARK: UITableViewDataSource
 
 -(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-//  return self.availableRooms.count;
   NSArray *sections = [self.fetchedResultsController sections];
   id<NSFetchedResultsSectionInfo> sectionInfo = [sections objectAtIndex:section];
   return [sectionInfo numberOfObjects];
