@@ -1,5 +1,5 @@
 //
-//  Room.h
+//  Guest.h
 //  HotelReservations
 //
 //  Created by Josh Nagel on 5/6/15.
@@ -9,18 +9,16 @@
 #import <Foundation/Foundation.h>
 #import <CoreData/CoreData.h>
 
-@class Hotel, Reservation;
+@class Reservation;
 
-@interface Room : NSManagedObject
+@interface Guest : NSManagedObject
 
-@property (nonatomic) int16_t beds;
-@property (nonatomic) int16_t number;
-@property (nonatomic) int16_t rate;
-@property (nonatomic, retain) Hotel *hotel;
+@property (nonatomic, retain) NSString * firstName;
+@property (nonatomic, retain) NSString * lastName;
 @property (nonatomic, retain) NSSet *reservations;
 @end
 
-@interface Room (CoreDataGeneratedAccessors)
+@interface Guest (CoreDataGeneratedAccessors)
 
 - (void)addReservationsObject:(Reservation *)value;
 - (void)removeReservationsObject:(Reservation *)value;

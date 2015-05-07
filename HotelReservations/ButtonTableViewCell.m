@@ -6,10 +6,10 @@
 //  Copyright (c) 2015 jnagel. All rights reserved.
 //
 
-#import "SearchButtonTableViewCell.h"
+#import "ButtonTableViewCell.h"
 #import "HotelReservationsStyleKit.h"
 
-@implementation SearchButtonTableViewCell
+@implementation ButtonTableViewCell
 
 -(instancetype)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier {
   self = [super initWithStyle:UITableViewCellStyleDefault reuseIdentifier:reuseIdentifier];
@@ -19,7 +19,7 @@
     self.searchLabel.text = @"Search";
     self.searchLabel.textColor = [UIColor whiteColor];
     [self.contentView addSubview:self.searchLabel];
-    self.backgroundImage = [[UIImageView alloc]initWithImage:[HotelReservationsStyleKit imageOfSectionHeaderWithFrame:self.contentView.frame]];
+    self.backgroundImage = [[UIImageView alloc]initWithImage:[HotelReservationsStyleKit imageOfSectionHeaderWithFrame:CGRectMake(0, 0, 600, 30)]];
     self.backgroundImage.translatesAutoresizingMaskIntoConstraints = false;
     [self.contentView addSubview:self.backgroundImage];
     NSDictionary *views = @{@"searchLabel": self.searchLabel, @"backgroundImage": self.backgroundImage};

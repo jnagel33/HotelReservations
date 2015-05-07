@@ -1,9 +1,9 @@
 //
 //  Hotel.h
-//  
+//  HotelReservations
 //
-//  Created by Josh Nagel on 5/4/15.
-//
+//  Created by Josh Nagel on 5/6/15.
+//  Copyright (c) 2015 jnagel. All rights reserved.
 //
 
 #import <Foundation/Foundation.h>

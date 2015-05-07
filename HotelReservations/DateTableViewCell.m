@@ -18,7 +18,8 @@
     self.fromToLabel.translatesAutoresizingMaskIntoConstraints = false;
     [self.contentView addSubview:self.fromToLabel];
     self.dateLabel = [[UILabel alloc]init];
-    self.dateLabel.textColor = [HotelReservationsStyleKit gradientColor];
+    self.dateLabel.textColor = [HotelReservationsStyleKit blueDark];
+    self.dateLabel.text = @"Choose a Date";
     self.dateLabel.translatesAutoresizingMaskIntoConstraints = false;
     [self.contentView addSubview:self.dateLabel];
     NSDictionary *views = @{@"fromToLabel":self.fromToLabel, @"dateLabel":self.dateLabel};

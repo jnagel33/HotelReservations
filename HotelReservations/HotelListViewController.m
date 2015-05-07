@@ -13,6 +13,8 @@
 #import "RoomsListViewController.h"
 #import "HotelTableViewCell.h"
 #import "HotelHeaderView.h"
+#import "HotelService.h"
+#import "HotelReservationsStyleKit.h"
 
 @interface HotelListViewController () <UITableViewDataSource, UITableViewDelegate>
 
@@ -35,23 +37,17 @@
 
 - (void)viewDidLoad {
   [super viewDidLoad];
-  self.navigationItem.title = @"Hotels";
+  UILabel *titleLabel = [[UILabel alloc]initWithFrame:CGRectMake(0, 0, 50, 20)];
+  titleLabel.textColor = [HotelReservationsStyleKit blueDark];
+  titleLabel.text = @"Hotels";
+  self.navigationItem.titleView = titleLabel;
+  
   self.tableView.delegate = self;
   [self.tableView registerClass:[HotelTableViewCell class]forCellReuseIdentifier:@"HotelCell"];
   
   AppDelegate *appDelegate = [UIApplication sharedApplication].delegate;
-  NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:@"Hotel"];
-  NSSortDescriptor *sortDescriptor = [[NSSortDescriptor alloc]initWithKey:@"stars" ascending:false];
-  [fetchRequest setSortDescriptors:@[sortDescriptor]];
-  
-  
-  NSError *fetchError;
-  NSArray *myHotels = [appDelegate.managedObjectContext executeFetchRequest:fetchRequest error:&fetchError];
-  if (fetchError != nil) {
-    NSLog(@"%@", fetchError.localizedDescription);
-  } else {
-    self.hotels = [self getSections:myHotels];
-  }
+    NSArray *allHotels = [appDelegate.hotelService fetchAllHotels];
+  self.hotels = [self getSections:allHotels];
   self.tableView.dataSource = self;
 }
 

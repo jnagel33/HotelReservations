@@ -1,27 +1,21 @@
 //
-//  AppDelegate.h
+//  CoreDataStack.h
 //  HotelReservations
 //
-//  Created by Josh Nagel on 5/4/15.
+//  Created by Josh Nagel on 5/6/15.
 //  Copyright (c) 2015 jnagel. All rights reserved.
 //
 
-#import <UIKit/UIKit.h>
+#import <Foundation/Foundation.h>
 #import <CoreData/CoreData.h>
-@class HotelService;
 
-@interface AppDelegate : UIResponder <UIApplicationDelegate>
-
-@property (strong, nonatomic) UIWindow *window;
+@interface CoreDataStack : NSObject
 
 @property (readonly, strong, nonatomic) NSManagedObjectContext *managedObjectContext;
 @property (readonly, strong, nonatomic) NSManagedObjectModel *managedObjectModel;
 @property (readonly, strong, nonatomic) NSPersistentStoreCoordinator *persistentStoreCoordinator;
-@property (readonly, strong, nonatomic) HotelService *hotelService;
 
 - (void)saveContext;
 - (NSURL *)applicationDocumentsDirectory;
 
-
 @end
-

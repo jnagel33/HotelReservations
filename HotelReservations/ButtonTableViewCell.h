@@ -8,7 +8,7 @@
 
 #import <UIKit/UIKit.h>
 
-@interface SearchButtonTableViewCell : UITableViewCell
+@interface ButtonTableViewCell : UITableViewCell
 
 @property(strong,nonatomic)UILabel *searchLabel;
 @property(strong,nonatomic)UIImageView *backgroundImage;
