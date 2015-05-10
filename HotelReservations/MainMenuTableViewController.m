@@ -106,17 +106,32 @@ const NSInteger kMinBedsCount = 1;
   self.showLocation = false;
   self.bedCount = 1;
   
+  [self refreshLocations];
+  self.fromCell.detailLabel.text = @"--Choose a Date";
+  self.toCell.detailLabel.text = @"--Choose a Date";
+  self.locationCell.detailLabel.text = @"--Choose a Location--";
+  self.locationPicker.delegate = self;
+  self.locationPicker.dataSource = self;
+}
+
+-(void)viewDidAppear:(BOOL)animated {
+  [super viewDidAppear:animated];
+  [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(refreshLocations) name:@"DataChanged" object:nil];
+}
+
+-(void)viewDidDisappear:(BOOL)animated {
+  [super viewDidDisappear:animated];
+  [[NSNotificationCenter defaultCenter]removeObserver:self];
+}
+
+-(void)refreshLocations {
   AppDelegate *appDelegate = [UIApplication sharedApplication].delegate;
   NSArray *hotels = [appDelegate.hotelService fetchAllHotels];
   self.locations = [[NSMutableArray alloc]init];
   for (Hotel *hotel in hotels) {
     [self.locations addObject:hotel.location];
   }
-  self.fromCell.detailLabel.text = @"--Choose a Date";
-  self.toCell.detailLabel.text = @"--Choose a Date";
-  self.locationCell.detailLabel.text = @"--Choose a Location--";
-  self.locationPicker.delegate = self;
-  self.locationPicker.dataSource = self;
+  [self.locationPicker reloadComponent:0];
 }
 
 -(void)toggleFromDatePicker:(BOOL)value {

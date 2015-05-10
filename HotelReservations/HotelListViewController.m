@@ -47,10 +47,25 @@
   self.tableView.delegate = self;
   [self.tableView registerClass:[MainDetailImageTableViewCell class]forCellReuseIdentifier:@"HotelCell"];
   
+  [self fetchHotels];
+  self.tableView.dataSource = self;
+}
+
+-(void)viewDidAppear:(BOOL)animated {
+  [super viewDidAppear:animated];
+  
+  [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(fetchHotels) name:@"DataChanged" object:nil];
+}
+
+-(void)viewDidDisappear:(BOOL)animated {
+  [super viewDidDisappear:animated];
+  [[NSNotificationCenter defaultCenter]removeObserver:self];
+}
+
+-(void)fetchHotels {
   AppDelegate *appDelegate = [UIApplication sharedApplication].delegate;
   NSArray *allHotels = [appDelegate.hotelService fetchAllHotels];
   self.hotels = [self getSections:allHotels];
-  self.tableView.dataSource = self;
 }
 
 -(NSArray *)getSections:(NSArray *)hotels {

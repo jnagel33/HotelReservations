@@ -13,6 +13,9 @@
 #import "HotelHeaderView.h"
 #import "AppDelegate.h"
 #import "HotelService.h"
+#import "MainDetailImageTableViewCell.h"
+#import "Room.h"
+#import "NoResultsTableViewCell.h"
 
 const int kCurrentReservationSectionIndex = 0;
 const int kPastReservationsSectionIndex = 1;
@@ -34,7 +37,8 @@ const int kPastReservationsSectionIndex = 1;
   titleLabel.text = [NSString stringWithFormat:@"%@, %@", self.selectedGuest.lastName, self.selectedGuest.firstName];
   self.navigationItem.titleView = titleLabel;
   
-  [self.tableView registerClass:[UITableViewCell class] forCellReuseIdentifier:@"GuestDetailCell"];
+  [self.tableView registerClass:[MainDetailImageTableViewCell class] forCellReuseIdentifier:@"GuestDetailCell"];
+  [self.tableView registerClass:[NoResultsTableViewCell class] forCellReuseIdentifier:@"NoResultsCell"];
   
   [self getSections];
 }
@@ -64,27 +68,49 @@ const int kPastReservationsSectionIndex = 1;
 //MARK: UITableViewDataSource
 
 -(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-  return [self.reservations[section] count];
+  if ([self.reservations[section] count] == 0) {
+    return 1;
+  } else {
+    return [self.reservations[section] count];
+  }
 }
 
 -(UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-  UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"GuestDetailCell" forIndexPath:indexPath];
-  if (cell == nil) {
-    cell = [cell initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"GuestDetailCell"];
-  }
   NSArray *section = self.reservations[indexPath.section];
-  Reservation *reservation = section[indexPath.row];
-  self.dateFormatter = [[NSDateFormatter alloc]init];
-  self.dateFormatter.dateStyle = NSDateFormatterMediumStyle;
-  NSString *fromDateStr = [self.dateFormatter stringFromDate:reservation.startDate];
-  NSString *toDateStr = [self.dateFormatter stringFromDate:reservation.endDate];
-  
-  cell.textLabel.text = [NSString stringWithFormat:@"%@ through %@", fromDateStr, toDateStr];
-  return cell;
+  if (section.count == 0) {
+    NoResultsTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"NoResultsCell" forIndexPath:indexPath];
+    if (indexPath.section == kCurrentReservationSectionIndex) {
+      cell.mainLabel.text = @"Guest has no current reservations";
+    } else {
+      cell.mainLabel.text = @"Guest has no past reservations";
+    }
+    return cell;
+  } else {
+    MainDetailImageTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"GuestDetailCell" forIndexPath:indexPath];
+    Reservation *reservation = section[indexPath.row];
+    self.dateFormatter = [[NSDateFormatter alloc]init];
+    self.dateFormatter.dateFormat = @"MMM dd";
+    NSString *fromDateStr = [self.dateFormatter stringFromDate:reservation.startDate];
+    NSString *toDateStr = [self.dateFormatter stringFromDate:reservation.endDate];
+    cell.mainLabel.text = [NSString stringWithFormat:@"Confirmation #%@",reservation.confirmationID];
+    cell.detailLabel.text = [NSString stringWithFormat:@"%@ through %@", fromDateStr, toDateStr];
+    cell.mainImageView.image = nil;
+    Room *room = reservation.room;
+    if (room.actualImage == nil) {
+      UIImage *roomImage = [UIImage imageWithData:room.image];
+      room.actualImage = roomImage;
+    }
+    cell.mainImageView.image = room.actualImage;
+    return cell;
+  }
 }
 
 -(NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
   return self.reservations.count;
+}
+
+-(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
+  return 100;
 }
 
 -(NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section {

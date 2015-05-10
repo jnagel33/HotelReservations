@@ -59,13 +59,13 @@
 }
 
 -(void)handleDidChangeStore:(NSNotification *)notification {
-  
 }
 
 -(void)handleChangesToData:(NSNotification *)notification {
   NSLog(@"Data changed");
   [self.managedObjectContext performBlock:^{
     [self.managedObjectContext mergeChangesFromContextDidSaveNotification:notification];
+    [self checkForDuplicates];
   }];
   [[NSNotificationCenter defaultCenter]postNotificationName:@"DataChanged" object:nil];
 }
@@ -104,7 +104,7 @@
     storeType = NSSQLiteStoreType;
   }
   
-  NSDictionary *options = @{NSMigratePersistentStoresAutomaticallyOption : @true, NSInferMappingModelAutomaticallyOption : @true,NSPersistentStoreUbiquitousContentNameKey : @"HotelsiCloud", NSPersistentStoreUbiquitousContentURLKey : [self cloudDirectory]};
+  NSDictionary *options = @{NSMigratePersistentStoresAutomaticallyOption : @true, NSInferMappingModelAutomaticallyOption : @true,NSPersistentStoreUbiquitousContentNameKey : @"ReservationViCloud", NSPersistentStoreUbiquitousContentURLKey : [self cloudDirectory]};
   
   if (![_persistentStoreCoordinator addPersistentStoreWithType:storeType configuration:nil URL:storeURL options:options error:&error]) {
     // Report any error we got.
@@ -147,7 +147,6 @@
 }
 
 -(void)seedDataIfNeeded {
-  [self checkForDuplicates];
   NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:@"Hotel"];
   NSError *fetchError;
   NSArray *myHotels = [self.managedObjectContext executeFetchRequest:fetchRequest error:&fetchError];
@@ -306,7 +305,7 @@
   for (Hotel *duplicate in dupes) {
     if (prevHotel) {
       if ([duplicate.name isEqualToString:prevHotel.name]) {
-        if (duplicate.objectID > prevHotel.objectID) {
+        if (duplicate.objectID < prevHotel.objectID) {
           [self.managedObjectContext deleteObject:duplicate];
         } else {
           [self.managedObjectContext deleteObject:prevHotel];
@@ -319,52 +318,52 @@
       prevHotel = duplicate;
     }
   }
-  //Rooms
-  NSString *uniqueRoomIdentifier = @"number";
-  keyPathExpression = [NSExpression expressionForKeyPath:uniqueRoomIdentifier];
-  countExpression = [NSExpression expressionForFunction: @"count:" arguments:@[keyPathExpression]];
-  [countExpressionDescription setExpression:countExpression];
-  entity = [NSEntityDescription entityForName:@"Room" inManagedObjectContext:self.managedObjectContext];
-  uniqueAttribute = [[entity attributesByName]objectForKey:uniqueRoomIdentifier];
-  fetchRequest = [NSFetchRequest fetchRequestWithEntityName:@"Room"];
-  [fetchRequest setPropertiesToFetch:@[uniqueAttribute, countExpressionDescription]];
-  [fetchRequest setPropertiesToGroupBy:@[uniqueAttribute]];
-  [fetchRequest setResultType:NSDictionaryResultType];
-  fetchedDictionaries = [self.managedObjectContext executeFetchRequest:fetchRequest error:nil];
-  NSMutableArray *roomsWithDupes = [NSMutableArray array];
-  for (NSDictionary *dict in fetchedDictionaries) {
-    NSNumber *count = dict[@"count"];
-    if ([count integerValue] > 1) {
-      [roomsWithDupes addObject:dict[@"number"]];
-    }
-  }
+//  //Rooms
+//  NSString *uniqueRoomIdentifier = @"number";
+//  keyPathExpression = [NSExpression expressionForKeyPath:uniqueRoomIdentifier];
+//  countExpression = [NSExpression expressionForFunction: @"count:" arguments:@[keyPathExpression]];
+//  [countExpressionDescription setExpression:countExpression];
+//  entity = [NSEntityDescription entityForName:@"Room" inManagedObjectContext:self.managedObjectContext];
+//  uniqueAttribute = [[entity attributesByName]objectForKey:uniqueRoomIdentifier];
+//  fetchRequest = [NSFetchRequest fetchRequestWithEntityName:@"Room"];
+//  [fetchRequest setPropertiesToFetch:@[uniqueAttribute, countExpressionDescription]];
+//  [fetchRequest setPropertiesToGroupBy:@[uniqueAttribute]];
+//  [fetchRequest setResultType:NSDictionaryResultType];
+//  fetchedDictionaries = [self.managedObjectContext executeFetchRequest:fetchRequest error:nil];
+//  NSMutableArray *roomsWithDupes = [NSMutableArray array];
+//  for (NSDictionary *dict in fetchedDictionaries) {
+//    NSNumber *count = dict[@"count"];
+//    if ([count integerValue] > 1) {
+//      [roomsWithDupes addObject:dict[@"number"]];
+//    }
+//  }
+//  
+//  dupeFetchRequest = [NSFetchRequest fetchRequestWithEntityName:@"Room"];
+//  [dupeFetchRequest setIncludesPendingChanges:false];
+//  predicate = [NSPredicate predicateWithFormat:@"number IN (%@)", roomsWithDupes];
+//  sortDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"number" ascending:true];
+//  [dupeFetchRequest setSortDescriptors:@[sortDescriptor]];
+//  [dupeFetchRequest setPredicate:predicate];
+//  dupes = [self.managedObjectContext executeFetchRequest:dupeFetchRequest error:nil];
   
-  dupeFetchRequest = [NSFetchRequest fetchRequestWithEntityName:@"Room"];
-  [dupeFetchRequest setIncludesPendingChanges:false];
-  predicate = [NSPredicate predicateWithFormat:@"number IN (%@)", roomsWithDupes];
-  sortDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"number" ascending:true];
-  [dupeFetchRequest setSortDescriptors:@[sortDescriptor]];
-  [dupeFetchRequest setPredicate:predicate];
-  dupes = [self.managedObjectContext executeFetchRequest:dupeFetchRequest error:nil];
-  
-  
-  Room *prevRoom;
-  for (Room *duplicate in dupes) {
-    if (prevRoom) {
-      if (duplicate.number == prevRoom.number) {
-        if (duplicate.objectID > prevRoom.objectID) {
-          [self.managedObjectContext deleteObject:duplicate];
-        } else {
-          [self.managedObjectContext deleteObject:prevRoom];
-          prevRoom = duplicate;
-        }
-      } else {
-        prevRoom = duplicate;
-      }
-    } else {
-      prevRoom = duplicate;
-    }
-  }
+//  
+//  Room *prevRoom;
+//  for (Room *duplicate in dupes) {
+//    if (prevRoom) {
+//      if (duplicate.number == prevRoom.number) {
+//        if (duplicate.objectID > prevRoom.objectID) {
+//          [self.managedObjectContext deleteObject:duplicate];
+//        } else {
+//          [self.managedObjectContext deleteObject:prevRoom];
+//          prevRoom = duplicate;
+//        }
+//      } else {
+//        prevRoom = duplicate;
+//      }
+//    } else {
+//      prevRoom = duplicate;
+//    }
+//  }
 //  //Guest
 //  NSString *uniqueGuestIdentifier = @"lastName";
 //  keyPathExpression = [NSExpression expressionForKeyPath:uniqueGuestIdentifier];
@@ -411,9 +410,9 @@
 //      prevGuest = duplicate;
 //    }
 //  }
-//
-//  //Reservation
-//  NSString *uniqueReservationIdentifier = @"endDate";
+
+  //Reservation
+//  NSString *uniqueReservationIdentifier = @"confirmationID";
 //  keyPathExpression = [NSExpression expressionForKeyPath:uniqueReservationIdentifier];
 //  countExpression = [NSExpression expressionForFunction: @"count:" arguments:@[keyPathExpression]];
 //  [countExpressionDescription setExpression:countExpression];
@@ -428,14 +427,14 @@
 //  for (NSDictionary *dict in fetchedDictionaries) {
 //    NSNumber *count = dict[@"count"];
 //    if ([count integerValue] > 1) {
-//      [reservationsWithDupes addObject:dict[@"endDate"]];
+//      [reservationsWithDupes addObject:dict[@"confirmationID"]];
 //    }
 //  }
 //  
 //  dupeFetchRequest = [NSFetchRequest fetchRequestWithEntityName:@"Reservation"];
 //  [dupeFetchRequest setIncludesPendingChanges:false];
-//  predicate = [NSPredicate predicateWithFormat:@"endDate IN (%@)", reservationsWithDupes];
-//  sortDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"endDate" ascending:true];
+//  predicate = [NSPredicate predicateWithFormat:@"confirmationID IN (%@)", reservationsWithDupes];
+//  sortDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"confirmationID" ascending:true];
 //  [dupeFetchRequest setSortDescriptors:@[sortDescriptor]];
 //  [dupeFetchRequest setPredicate:predicate];
 //  dupes = [self.managedObjectContext executeFetchRequest:dupeFetchRequest error:nil];
@@ -444,10 +443,12 @@
 //  Reservation *prevReservation;
 //  for (Reservation *duplicate in dupes) {
 //    if (prevReservation) {
-//      if ([duplicate.endDate compare:prevReservation.endDate] == NSOrderedSame) {
-//        if (duplicate.objectID > prevReservation.objectID) {
+//      if ([duplicate.confirmationID isEqualToString:prevReservation.confirmationID] == NSOrderedSame) {
+//        if (duplicate.objectID < prevReservation.objectID) {
+//          [self.managedObjectContext deleteObject:duplicate.room];
 //          [self.managedObjectContext deleteObject:duplicate];
 //        } else {
+//          [self.managedObjectContext deleteObject:duplicate.room];
 //          [self.managedObjectContext deleteObject:prevReservation];
 //          prevReservation = duplicate;
 //        }

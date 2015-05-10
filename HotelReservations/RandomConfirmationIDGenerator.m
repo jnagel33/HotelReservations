@@ -17,7 +17,7 @@
   
   NSMutableString *randomString = [NSMutableString stringWithCapacity: stringLength];
   
-  for (NSUInteger i = 0U; i < 20; i++) {
+  for (NSUInteger i = 0U; i < stringLength; i++) {
     u_int32_t r = arc4random() % [letters length];
     unichar c = [letters characterAtIndex:r];
     [randomString appendFormat:@"%C", c];

@@ -19,6 +19,7 @@
 #import "SearchTableViewHeaderView.h"
 #import "MainDetailImageTableViewCell.h"
 #import "ImageResizer.h"
+#import "NoResultsTableViewCell.h"
 
 @interface AvailabilityTableViewController () <NSFetchedResultsControllerDelegate>
 
@@ -75,15 +76,33 @@
   }
   self.bedsLabel.text = [NSString stringWithFormat:@"%hd+ beds",self.bedCount];
   
-[self.tableView registerClass:[MainDetailImageTableViewCell class]forCellReuseIdentifier:@"AvailableRoomsCell"];
+  [self.tableView registerClass:[MainDetailImageTableViewCell class]forCellReuseIdentifier:@"AvailableRoomsCell"];
+  [self.tableView registerClass:[NoResultsTableViewCell class] forCellReuseIdentifier:@"NoResultsCell"];
+  [self produceAvailableRoomsResultsController];
+}
+
+-(void)viewDidAppear:(BOOL)animated {
+  [super viewDidAppear:animated];
+  [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(produceAvailableRoomsResultsController) name:@"DataChanged" object:nil];
+}
+
+-(void)viewDidDisappear:(BOOL)animated {
+  [super viewDidDisappear:animated];
+  [[NSNotificationCenter defaultCenter]removeObserver:self];
+}
+
+-(void)produceAvailableRoomsResultsController {
+  self.fetchedResultsController = nil;
   AppDelegate *appDelegate = [UIApplication sharedApplication].delegate;
-  self.fetchedResultsController = [appDelegate.hotelService produceFetchResultsControllerForAvailableRoomsFromDate:self.fromDate toDate:self.toDate withBedCount:self.bedCount andLocation:self.location];
-  self.fetchedResultsController.delegate = self;
+  NSFetchedResultsController *newFetchController = [appDelegate.hotelService produceFetchResultsControllerForAvailableRoomsFromDate:self.fromDate toDate:self.toDate withBedCount:self.bedCount andLocation:self.location];
   NSError *fetchError;
+  self.fetchedResultsController = newFetchController;
   [self.fetchedResultsController performFetch:&fetchError];
   if (fetchError != nil) {
     NSLog(@"%@", fetchError.localizedDescription);
   }
+  self.fetchedResultsController.delegate = self;
+  [self.tableView reloadData];
 }
 
 //MARK:
@@ -122,18 +141,31 @@
 //MARK: UITableViewDataSource
 
 -(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-  NSArray *sections = [self.fetchedResultsController sections];
-  id<NSFetchedResultsSectionInfo> sectionInfo = [sections objectAtIndex:section];
-  return [sectionInfo numberOfObjects];
+  if ([self.fetchedResultsController.sections count] == 0) {
+    return 1;
+  } else {
+    NSArray *sections = [self.fetchedResultsController sections];
+    id<NSFetchedResultsSectionInfo> sectionInfo = [sections objectAtIndex:section];
+    return [sectionInfo numberOfObjects];
+  }
 }
 
 -(UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-  MainDetailImageTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"AvailableRoomsCell" forIndexPath:indexPath];
-  [self configureCell:cell atIndexPath:indexPath];
-  return cell;
+  if ([self.fetchedResultsController.sections count] == 0) {
+    NoResultsTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"NoResultsCell" forIndexPath:indexPath];
+      cell.mainLabel.text = @"No results found";
+    return cell;
+  } else {
+    MainDetailImageTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"AvailableRoomsCell" forIndexPath:indexPath];
+    [self configureCell:cell atIndexPath:indexPath];
+    return cell;
+  }
 }
 
 -(NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
+  if ([self.fetchedResultsController.sections count] == 0) {
+    return 1;
+  }
   return [self.fetchedResultsController.sections count];
 }
 
@@ -142,7 +174,8 @@
   Room *room = [self.fetchedResultsController objectAtIndexPath:indexPath];
   cell.mainLabel.text = [NSString stringWithFormat:@"Room #%hd",room.number];
   cell.detailLabel.text = [NSString stringWithFormat:@"$%hd / night",room.rate];
-  if (room.actualImage == nil && room.image != nil) {
+  cell.mainImageView.image = nil;
+  if (room.actualImage == nil) {
     UIImage *roomImage = [UIImage imageWithData:room.image];
     room.actualImage = roomImage;
   }
@@ -166,10 +199,14 @@
 }
 
 -(NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section {
-  id<NSFetchedResultsSectionInfo> sectionInfo = [[self.fetchedResultsController sections]objectAtIndex:section];
-  Room *room = [[sectionInfo objects]objectAtIndex:0];
-  Hotel *hotel = room.hotel;
-  return hotel.name;
+  if ([self.fetchedResultsController.sections count] == 0) {
+    return @"";
+  } else {
+    id<NSFetchedResultsSectionInfo> sectionInfo = [[self.fetchedResultsController sections]objectAtIndex:section];
+    Room *room = [[sectionInfo objects]objectAtIndex:0];
+    Hotel *hotel = room.hotel;
+    return hotel.name;
+  }
 }
 
 

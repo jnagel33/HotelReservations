@@ -42,6 +42,15 @@
 		43C7D3F81AFEE1CD00213618 /* Reservation.m in Sources */ = {isa = PBXBuildFile; fileRef = 43C7D3F71AFEE1CD00213618 /* Reservation.m */; };
 		43C7D3FB1AFEE85E00213618 /* Room.m in Sources */ = {isa = PBXBuildFile; fileRef = 43C7D3FA1AFEE85E00213618 /* Room.m */; };
 		43C7D3FE1AFEEA7700213618 /* Hotel.m in Sources */ = {isa = PBXBuildFile; fileRef = 43C7D3FD1AFEEA7700213618 /* Hotel.m */; };
+		43C7D4011AFEF75100213618 /* NoResultsTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 43C7D4001AFEF75100213618 /* NoResultsTableViewCell.m */; };
+		43C7D40D1AFF262A00213618 /* InterfaceController.m in Sources */ = {isa = PBXBuildFile; fileRef = 43C7D40C1AFF262A00213618 /* InterfaceController.m */; };
+		43C7D4101AFF262A00213618 /* NotificationController.m in Sources */ = {isa = PBXBuildFile; fileRef = 43C7D40F1AFF262A00213618 /* NotificationController.m */; };
+		43C7D4131AFF262A00213618 /* GlanceController.m in Sources */ = {isa = PBXBuildFile; fileRef = 43C7D4121AFF262A00213618 /* GlanceController.m */; };
+		43C7D4151AFF262A00213618 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 43C7D4141AFF262A00213618 /* Images.xcassets */; };
+		43C7D4191AFF262A00213618 /* HotelReservations WatchKit App.app in Resources */ = {isa = PBXBuildFile; fileRef = 43C7D4181AFF262A00213618 /* HotelReservations WatchKit App.app */; };
+		43C7D4211AFF262A00213618 /* Interface.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 43C7D41F1AFF262A00213618 /* Interface.storyboard */; };
+		43C7D4231AFF262A00213618 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 43C7D4221AFF262A00213618 /* Images.xcassets */; };
+		43C7D4261AFF262A00213618 /* HotelReservations WatchKit Extension.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 43C7D4061AFF262A00213618 /* HotelReservations WatchKit Extension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		43F629111AFC97FA006A4461 /* SearchTableViewHeaderView.m in Sources */ = {isa = PBXBuildFile; fileRef = 43F629101AFC97FA006A4461 /* SearchTableViewHeaderView.m */; };
 /* End PBXBuildFile section */
 
@@ -53,7 +62,35 @@
 			remoteGlobalIDString = 435BD8D11AF83D540059CF7C;
 			remoteInfo = HotelReservations;
 		};
+		43C7D41A1AFF262A00213618 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 435BD8CA1AF83D540059CF7C /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 43C7D4171AFF262A00213618;
+			remoteInfo = "HotelReservations WatchKit App";
+		};
+		43C7D4241AFF262A00213618 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 435BD8CA1AF83D540059CF7C /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 43C7D4051AFF262A00213618;
+			remoteInfo = "HotelReservations WatchKit Extension";
+		};
 /* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		43C7D42D1AFF262B00213618 /* Embed App Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+				43C7D4261AFF262A00213618 /* HotelReservations WatchKit Extension.appex in Embed App Extensions */,
+			);
+			name = "Embed App Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		430B30491AF9E3D0006B416B /* AvailabilityTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AvailabilityTableViewController.h; sourceTree = "<group>"; };
@@ -123,6 +160,22 @@
 		43C7D3FA1AFEE85E00213618 /* Room.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Room.m; path = ../Room.m; sourceTree = "<group>"; };
 		43C7D3FC1AFEEA7700213618 /* Hotel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Hotel.h; path = ../Hotel.h; sourceTree = "<group>"; };
 		43C7D3FD1AFEEA7700213618 /* Hotel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Hotel.m; path = ../Hotel.m; sourceTree = "<group>"; };
+		43C7D3FF1AFEF75100213618 /* NoResultsTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NoResultsTableViewCell.h; sourceTree = "<group>"; };
+		43C7D4001AFEF75100213618 /* NoResultsTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NoResultsTableViewCell.m; sourceTree = "<group>"; };
+		43C7D4061AFF262A00213618 /* HotelReservations WatchKit Extension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = "HotelReservations WatchKit Extension.appex"; sourceTree = BUILT_PRODUCTS_DIR; };
+		43C7D4091AFF262A00213618 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		43C7D40A1AFF262A00213618 /* PushNotificationPayload.apns */ = {isa = PBXFileReference; lastKnownFileType = text; path = PushNotificationPayload.apns; sourceTree = "<group>"; };
+		43C7D40B1AFF262A00213618 /* InterfaceController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = InterfaceController.h; sourceTree = "<group>"; };
+		43C7D40C1AFF262A00213618 /* InterfaceController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = InterfaceController.m; sourceTree = "<group>"; };
+		43C7D40E1AFF262A00213618 /* NotificationController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = NotificationController.h; sourceTree = "<group>"; };
+		43C7D40F1AFF262A00213618 /* NotificationController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = NotificationController.m; sourceTree = "<group>"; };
+		43C7D4111AFF262A00213618 /* GlanceController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = GlanceController.h; sourceTree = "<group>"; };
+		43C7D4121AFF262A00213618 /* GlanceController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = GlanceController.m; sourceTree = "<group>"; };
+		43C7D4141AFF262A00213618 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
+		43C7D4181AFF262A00213618 /* HotelReservations WatchKit App.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "HotelReservations WatchKit App.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		43C7D41E1AFF262A00213618 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		43C7D4201AFF262A00213618 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Interface.storyboard; sourceTree = "<group>"; };
+		43C7D4221AFF262A00213618 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
 		43F6290F1AFC97FA006A4461 /* SearchTableViewHeaderView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SearchTableViewHeaderView.h; sourceTree = "<group>"; };
 		43F629101AFC97FA006A4461 /* SearchTableViewHeaderView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SearchTableViewHeaderView.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -136,6 +189,13 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 		435BD8EB1AF83D540059CF7C /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		43C7D4031AFF262A00213618 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -171,6 +231,8 @@
 				435BD8E21AF83D540059CF7C /* Main.storyboard */,
 				435BD8E51AF83D540059CF7C /* Images.xcassets */,
 				435BD8E71AF83D540059CF7C /* LaunchScreen.xib */,
+				43C7D3FF1AFEF75100213618 /* NoResultsTableViewCell.h */,
+				43C7D4001AFEF75100213618 /* NoResultsTableViewCell.m */,
 			);
 			name = View;
 			sourceTree = "<group>";
@@ -228,6 +290,8 @@
 			children = (
 				435BD8D41AF83D540059CF7C /* HotelReservations */,
 				435BD8F11AF83D540059CF7C /* HotelReservationsTests */,
+				43C7D4071AFF262A00213618 /* HotelReservations WatchKit Extension */,
+				43C7D41C1AFF262A00213618 /* HotelReservations WatchKit App */,
 				435BD8D31AF83D540059CF7C /* Products */,
 			);
 			sourceTree = "<group>";
@@ -237,6 +301,8 @@
 			children = (
 				435BD8D21AF83D540059CF7C /* HotelReservations.app */,
 				435BD8EE1AF83D540059CF7C /* HotelReservationsTests.xctest */,
+				43C7D4061AFF262A00213618 /* HotelReservations WatchKit Extension.appex */,
+				43C7D4181AFF262A00213618 /* HotelReservations WatchKit App.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -283,6 +349,48 @@
 			name = "Supporting Files";
 			sourceTree = "<group>";
 		};
+		43C7D4071AFF262A00213618 /* HotelReservations WatchKit Extension */ = {
+			isa = PBXGroup;
+			children = (
+				43C7D40B1AFF262A00213618 /* InterfaceController.h */,
+				43C7D40C1AFF262A00213618 /* InterfaceController.m */,
+				43C7D40E1AFF262A00213618 /* NotificationController.h */,
+				43C7D40F1AFF262A00213618 /* NotificationController.m */,
+				43C7D4111AFF262A00213618 /* GlanceController.h */,
+				43C7D4121AFF262A00213618 /* GlanceController.m */,
+				43C7D4141AFF262A00213618 /* Images.xcassets */,
+				43C7D4081AFF262A00213618 /* Supporting Files */,
+			);
+			path = "HotelReservations WatchKit Extension";
+			sourceTree = "<group>";
+		};
+		43C7D4081AFF262A00213618 /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				43C7D4091AFF262A00213618 /* Info.plist */,
+				43C7D40A1AFF262A00213618 /* PushNotificationPayload.apns */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		43C7D41C1AFF262A00213618 /* HotelReservations WatchKit App */ = {
+			isa = PBXGroup;
+			children = (
+				43C7D41F1AFF262A00213618 /* Interface.storyboard */,
+				43C7D4221AFF262A00213618 /* Images.xcassets */,
+				43C7D41D1AFF262A00213618 /* Supporting Files */,
+			);
+			path = "HotelReservations WatchKit App";
+			sourceTree = "<group>";
+		};
+		43C7D41D1AFF262A00213618 /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				43C7D41E1AFF262A00213618 /* Info.plist */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -293,10 +401,12 @@
 				435BD8CE1AF83D540059CF7C /* Sources */,
 				435BD8CF1AF83D540059CF7C /* Frameworks */,
 				435BD8D01AF83D540059CF7C /* Resources */,
+				43C7D42D1AFF262B00213618 /* Embed App Extensions */,
 			);
 			buildRules = (
 			);
 			dependencies = (
+				43C7D4251AFF262A00213618 /* PBXTargetDependency */,
 			);
 			name = HotelReservations;
 			productName = HotelReservations;
@@ -321,6 +431,39 @@
 			productReference = 435BD8EE1AF83D540059CF7C /* HotelReservationsTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
+		43C7D4051AFF262A00213618 /* HotelReservations WatchKit Extension */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 43C7D42A1AFF262B00213618 /* Build configuration list for PBXNativeTarget "HotelReservations WatchKit Extension" */;
+			buildPhases = (
+				43C7D4021AFF262A00213618 /* Sources */,
+				43C7D4031AFF262A00213618 /* Frameworks */,
+				43C7D4041AFF262A00213618 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				43C7D41B1AFF262A00213618 /* PBXTargetDependency */,
+			);
+			name = "HotelReservations WatchKit Extension";
+			productName = "HotelReservations WatchKit Extension";
+			productReference = 43C7D4061AFF262A00213618 /* HotelReservations WatchKit Extension.appex */;
+			productType = "com.apple.product-type.watchkit-extension";
+		};
+		43C7D4171AFF262A00213618 /* HotelReservations WatchKit App */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 43C7D4271AFF262B00213618 /* Build configuration list for PBXNativeTarget "HotelReservations WatchKit App" */;
+			buildPhases = (
+				43C7D4161AFF262A00213618 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "HotelReservations WatchKit App";
+			productName = "HotelReservations WatchKit App";
+			productReference = 43C7D4181AFF262A00213618 /* HotelReservations WatchKit App.app */;
+			productType = "com.apple.product-type.application.watchapp";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -343,6 +486,13 @@
 						CreatedOnToolsVersion = 6.3.1;
 						TestTargetID = 435BD8D11AF83D540059CF7C;
 					};
+					43C7D4051AFF262A00213618 = {
+						CreatedOnToolsVersion = 6.3.1;
+						DevelopmentTeam = DU643WSPQQ;
+					};
+					43C7D4171AFF262A00213618 = {
+						CreatedOnToolsVersion = 6.3.1;
+					};
 				};
 			};
 			buildConfigurationList = 435BD8CD1AF83D540059CF7C /* Build configuration list for PBXProject "HotelReservations" */;
@@ -360,6 +510,8 @@
 			targets = (
 				435BD8D11AF83D540059CF7C /* HotelReservations */,
 				435BD8ED1AF83D540059CF7C /* HotelReservationsTests */,
+				43C7D4051AFF262A00213618 /* HotelReservations WatchKit Extension */,
+				43C7D4171AFF262A00213618 /* HotelReservations WatchKit App */,
 			);
 		};
 /* End PBXProject section */
@@ -380,6 +532,24 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		43C7D4041AFF262A00213618 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				43C7D4191AFF262A00213618 /* HotelReservations WatchKit App.app in Resources */,
+				43C7D4151AFF262A00213618 /* Images.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		43C7D4161AFF262A00213618 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				43C7D4211AFF262A00213618 /* Interface.storyboard in Resources */,
+				43C7D4231AFF262A00213618 /* Images.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -417,6 +587,7 @@
 				435BBAEB1AF876A3007200A4 /* MainDetailImageTableViewCell.m in Sources */,
 				435E487C1AFDEA0700D50A81 /* ImageResizer.m in Sources */,
 				435BD9001AF848E30059CF7C /* HotelListViewController.m in Sources */,
+				43C7D4011AFEF75100213618 /* NoResultsTableViewCell.m in Sources */,
 				430FB13C1AF9D25800B35A97 /* ButtonTableViewCell.m in Sources */,
 				430B30691AFAF12F006B416B /* CoreDataStack.m in Sources */,
 			);
@@ -432,6 +603,16 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		43C7D4021AFF262A00213618 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				43C7D4101AFF262A00213618 /* NotificationController.m in Sources */,
+				43C7D40D1AFF262A00213618 /* InterfaceController.m in Sources */,
+				43C7D4131AFF262A00213618 /* GlanceController.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
@@ -439,6 +620,16 @@
 			isa = PBXTargetDependency;
 			target = 435BD8D11AF83D540059CF7C /* HotelReservations */;
 			targetProxy = 435BD8EF1AF83D540059CF7C /* PBXContainerItemProxy */;
+		};
+		43C7D41B1AFF262A00213618 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 43C7D4171AFF262A00213618 /* HotelReservations WatchKit App */;
+			targetProxy = 43C7D41A1AFF262A00213618 /* PBXContainerItemProxy */;
+		};
+		43C7D4251AFF262A00213618 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 43C7D4051AFF262A00213618 /* HotelReservations WatchKit Extension */;
+			targetProxy = 43C7D4241AFF262A00213618 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -457,6 +648,14 @@
 				435BD8E81AF83D540059CF7C /* Base */,
 			);
 			name = LaunchScreen.xib;
+			sourceTree = "<group>";
+		};
+		43C7D41F1AFF262A00213618 /* Interface.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				43C7D4201AFF262A00213618 /* Base */,
+			);
+			name = Interface.storyboard;
 			sourceTree = "<group>";
 		};
 /* End PBXVariantGroup section */
@@ -606,6 +805,66 @@
 			};
 			name = Release;
 		};
+		43C7D4281AFF262B00213618 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				IBSC_MODULE = HotelReservations_WatchKit_Extension;
+				INFOPLIST_FILE = "HotelReservations WatchKit App/Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 8.2;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				TARGETED_DEVICE_FAMILY = 4;
+				"TARGETED_DEVICE_FAMILY[sdk=iphonesimulator*]" = "1,4";
+			};
+			name = Debug;
+		};
+		43C7D4291AFF262B00213618 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				IBSC_MODULE = HotelReservations_WatchKit_Extension;
+				INFOPLIST_FILE = "HotelReservations WatchKit App/Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 8.2;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				TARGETED_DEVICE_FAMILY = 4;
+				"TARGETED_DEVICE_FAMILY[sdk=iphonesimulator*]" = "1,4";
+			};
+			name = Release;
+		};
+		43C7D42B1AFF262B00213618 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				INFOPLIST_FILE = "HotelReservations WatchKit Extension/Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
+				PRODUCT_NAME = "${TARGET_NAME}";
+				SKIP_INSTALL = YES;
+			};
+			name = Debug;
+		};
+		43C7D42C1AFF262B00213618 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				INFOPLIST_FILE = "HotelReservations WatchKit Extension/Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
+				PRODUCT_NAME = "${TARGET_NAME}";
+				SKIP_INSTALL = YES;
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -635,6 +894,22 @@
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
+		};
+		43C7D4271AFF262B00213618 /* Build configuration list for PBXNativeTarget "HotelReservations WatchKit App" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				43C7D4281AFF262B00213618 /* Debug */,
+				43C7D4291AFF262B00213618 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+		};
+		43C7D42A1AFF262B00213618 /* Build configuration list for PBXNativeTarget "HotelReservations WatchKit Extension" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				43C7D42B1AFF262B00213618 /* Debug */,
+				43C7D42C1AFF262B00213618 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
 		};
 /* End XCConfigurationList section */
 

@@ -7,6 +7,7 @@
 //
 
 #import "MainDetailImageTableViewCell.h"
+#import "HotelReservationsStyleKit.h"
 
 @implementation MainDetailImageTableViewCell
 
@@ -22,6 +23,7 @@
     self.mainLabel.translatesAutoresizingMaskIntoConstraints = false;
     [self.contentView addSubview:self.mainLabel];
     self.detailLabel = [[UILabel alloc]init];
+    self.detailLabel.textColor = [HotelReservationsStyleKit blueDark];
     self.detailLabel.translatesAutoresizingMaskIntoConstraints = false;
     [self.contentView addSubview:self.detailLabel];
     NSDictionary *views = @{@"mainImageView": self.mainImageView, @"mainLabel":self.mainLabel, @"detailLabel":self.detailLabel};
@@ -36,13 +38,14 @@
   
   NSArray *hHotelLayoutConstraint = [NSLayoutConstraint constraintsWithVisualFormat:@"H:|[mainImageView(100)]-8-[mainLabel]" options:0 metrics:nil views:views];
   [self.contentView addConstraints:hHotelLayoutConstraint];
-  NSLayoutConstraint *mainLabelCenterYLayoutConstraint = [NSLayoutConstraint constraintWithItem:self.mainLabel attribute:NSLayoutAttributeCenterY relatedBy:NSLayoutRelationEqual toItem:self.contentView attribute:NSLayoutAttributeCenterY multiplier:1 constant:0];
+  
+  NSLayoutConstraint *mainLabelCenterYLayoutConstraint = [NSLayoutConstraint constraintWithItem:self.mainLabel attribute:NSLayoutAttributeCenterY relatedBy:NSLayoutRelationEqual toItem:self.contentView attribute:NSLayoutAttributeCenterY multiplier:1 constant:-15];
   [self.contentView addConstraint:mainLabelCenterYLayoutConstraint];
   
-  NSLayoutConstraint *detailLabelCenterYLayoutConstraint = [NSLayoutConstraint constraintWithItem:self.detailLabel attribute:NSLayoutAttributeCenterY relatedBy:NSLayoutRelationEqual toItem:self.contentView attribute:NSLayoutAttributeCenterY multiplier:1 constant:0];
+  NSLayoutConstraint *detailLabelCenterYLayoutConstraint = [NSLayoutConstraint constraintWithItem:self.detailLabel attribute:NSLayoutAttributeCenterY relatedBy:NSLayoutRelationEqual toItem:self.contentView attribute:NSLayoutAttributeCenterY multiplier:1 constant:15];
   [self.contentView addConstraint:detailLabelCenterYLayoutConstraint];
   
-  NSArray *hDetailLabelLayoutConstraint = [NSLayoutConstraint constraintsWithVisualFormat:@"H:[detailLabel]-8-|" options:0 metrics:nil views:views];
+  NSArray *hDetailLabelLayoutConstraint = [NSLayoutConstraint constraintsWithVisualFormat:@"H:|[mainImageView(100)]-8-[detailLabel]|" options:0 metrics:nil views:views];
   [self.contentView addConstraints:hDetailLabelLayoutConstraint];
   
   NSLayoutConstraint *mainImageViewHeightLayoutConstraint = [NSLayoutConstraint constraintWithItem:self.mainImageView attribute:NSLayoutAttributeHeight relatedBy:NSLayoutRelationEqual toItem:self.contentView attribute:NSLayoutAttributeHeight multiplier:1 constant:0];

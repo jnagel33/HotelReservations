@@ -68,6 +68,12 @@
   [self.guestPickerCell addConstraint:userPickerCenterYLayoutConstraint];
   NSLayoutConstraint *userPickerCenterXLayoutConstraint = [NSLayoutConstraint constraintWithItem:self.guestPicker attribute:NSLayoutAttributeCenterX relatedBy:NSLayoutRelationEqual toItem:self.guestPickerCell attribute:NSLayoutAttributeCenterX multiplier:1 constant:0];
   [self.guestPickerCell addConstraint:userPickerCenterXLayoutConstraint];
+  
+  NSLayoutConstraint *userPickerHeightLayoutConstraint = [NSLayoutConstraint constraintWithItem:self.guestPicker attribute:NSLayoutAttributeHeight relatedBy:NSLayoutRelationEqual toItem:self.guestPickerCell attribute:NSLayoutAttributeHeight multiplier:1 constant:0];
+  [self.guestPickerCell addConstraint:userPickerHeightLayoutConstraint];
+  
+  NSLayoutConstraint *userPickerWidthLayoutConstraint = [NSLayoutConstraint constraintWithItem:self.guestPicker attribute:NSLayoutAttributeWidth relatedBy:NSLayoutRelationEqual toItem:self.guestPickerCell attribute:NSLayoutAttributeWidth multiplier:1 constant:0];
+  [self.guestPickerCell addConstraint:userPickerWidthLayoutConstraint];
 }
 
 - (void)viewDidLoad {
@@ -109,7 +115,7 @@
 -(void)setUser {
   NSInteger currentRow = [self.guestPicker selectedRowInComponent:0];
   if (currentRow != 0) {
-    Guest *guest = self.guests[currentRow];
+    Guest *guest = self.guests[currentRow - 1];
     NSString *nameStr = [NSString stringWithFormat:@"%@, %@", guest.lastName, guest.firstName];
     self.guestCell.detailLabel.text = nameStr;
   } else {
@@ -321,24 +327,7 @@
   if (textField == self.firstNameCell.nameTextField) {
     [self.lastNameCell.nameTextField becomeFirstResponder];
   }
-  
-  [self.tableView setContentOffset:CGPointMake(self.tableView.contentOffset.x, self.tableView.contentOffset.y - self.currentTableViewYOffset)];
-  [UIView animateWithDuration:0.5 animations:^{
-    [self.view layoutIfNeeded];
-  }];
   return true;
-}
-
--(void)textFieldDidBeginEditing:(UITextField *)textField {
-  if (textField == self.firstNameCell.nameTextField) {
-    self.currentTableViewYOffset = 100;
-  } else {
-    self.currentTableViewYOffset = 200;
-  }
-  [self.tableView setContentOffset:CGPointMake(self.tableView.contentOffset.x, self.tableView.contentOffset.y + self.currentTableViewYOffset)];
-  [UIView animateWithDuration:0.5 animations:^{
-    [self.view layoutIfNeeded];
-  }];
 }
 
 //MARK:
