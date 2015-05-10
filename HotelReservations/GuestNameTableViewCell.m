@@ -18,6 +18,8 @@
     [self.contentView addSubview:self.nameLabel];
     self.nameTextField = [[UITextField alloc]init];
     [self.nameTextField setTextAlignment:NSTextAlignmentLeft];
+    [self.nameTextField setAutocapitalizationType:UITextAutocapitalizationTypeWords];
+    [self.nameTextField setAutocorrectionType:UITextAutocorrectionTypeNo];
     self.nameTextField.translatesAutoresizingMaskIntoConstraints = false;
     [self.contentView addSubview:self.nameTextField];
     NSDictionary *views = @{@"nameLabel":self.nameLabel, @"nameTextField":self.nameTextField};

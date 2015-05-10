@@ -40,66 +40,9 @@
   self.window.rootViewController = navController;
   self.window.tintColor = [HotelReservationsStyleKit blueDark];
   
-  [self seedDataIfNeeded];
+  [self.hotelService.coreDataStack seedDataIfNeeded];
   
   return YES;
-}
-
--(void)seedDataIfNeeded {
-    NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:@"Hotel"];
-    NSError *fetchError;
-    NSArray *myHotels = [self.hotelService.coreDataStack.managedObjectContext executeFetchRequest:fetchRequest error:&fetchError];
-    NSLog(@"%lu", (unsigned long)myHotels.count);
-  if (myHotels.count == 0) {
-    NSString *filePath = [[NSBundle mainBundle]pathForResource:@"seed" ofType:@"json"];
-    NSData *data = [NSData dataWithContentsOfFile:filePath];
-    NSError *error;
-    NSDictionary *jsonObject = [NSJSONSerialization JSONObjectWithData:data options:0 error:&error];
-    NSArray *hotels = jsonObject[@"Hotels"];
-    for (NSDictionary *hotel in hotels) {
-      Hotel *newHotel = [NSEntityDescription insertNewObjectForEntityForName:@"Hotel" inManagedObjectContext:self.hotelService.coreDataStack.managedObjectContext];
-      newHotel.name = hotel[@"name"];
-      newHotel.location = hotel[@"location"];
-      NSNumber *starsNum = hotel[@"stars"];
-      newHotel.stars = starsNum.intValue;
-      NSArray *rooms = hotel[@"rooms"];
-      for (NSDictionary *room in rooms) {
-        Room *newRoom = [NSEntityDescription insertNewObjectForEntityForName:@"Room" inManagedObjectContext:self.hotelService.coreDataStack.managedObjectContext];
-        NSNumber *number = room[@"number"];
-        newRoom.number = number.intValue;
-        NSNumber *beds = room[@"beds"];
-        newRoom.beds = beds.intValue;
-        NSNumber *rate = room[@"rate"];
-        newRoom.rate = rate.intValue;
-        newRoom.hotel = newHotel;
-        if (newRoom.rate == 2) {
-          
-          Guest *newGuest = [NSEntityDescription insertNewObjectForEntityForName:@"Guest" inManagedObjectContext:self.hotelService.coreDataStack.managedObjectContext];
-          newGuest.firstName = [NSString stringWithFormat:@"User1"];
-          newGuest.lastName = [NSString stringWithFormat:@"User1"];
-          
-          Reservation *reservation = [NSEntityDescription insertNewObjectForEntityForName:@"Reservation" inManagedObjectContext:self.hotelService.coreDataStack.managedObjectContext];
-          reservation.startDate = [NSDate date];
-          NSCalendar *cal = [NSCalendar currentCalendar];
-          NSDateComponents *dateComponent = [[NSDateComponents alloc]init];
-          dateComponent.day = 1;
-          NSDate *tomorrow = [cal dateByAddingComponents:dateComponent toDate:reservation.startDate options:0];
-          
-          reservation.endDate = tomorrow;
-          
-          
-          reservation.room = newRoom;
-          [newGuest addReservationsObject:reservation];
-        }
-      }
-    }
-    
-    NSError *saveError;
-    [self.hotelService.coreDataStack.managedObjectContext save:&error];
-    if (saveError) {
-      NSLog(@"%@", saveError.localizedDescription);
-    }
-  }
 }
 
 - (void)applicationWillResignActive:(UIApplication *)application {

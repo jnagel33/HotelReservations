@@ -16,23 +16,38 @@
 #import "AppDelegate.h"
 #import "HotelService.h"
 #import "Guest.h"
+#import "GuestReservationsTableViewController.h"
+#import "PickerHeaderViewCell.h"
+#import "HotelService.h"
 
-@interface ReserveRoomTableViewController () <UITextFieldDelegate>
+@interface ReserveRoomTableViewController () <UITextFieldDelegate, UIPickerViewDataSource, UIPickerViewDelegate>
 
 @property(strong,nonatomic)ReservationTableViewCell *hotelNameCell;
 @property(strong,nonatomic)ReservationTableViewCell *roomNumberCell;
 @property(strong,nonatomic)ReservationTableViewCell *roomRateCell;
 @property(strong,nonatomic)ReservationTableViewCell *fromDateCell;
 @property(strong,nonatomic)ReservationTableViewCell *toDateCell;
+@property(strong,nonatomic)PickerHeaderViewCell *guestCell;
+@property(strong,nonatomic)UITableViewCell *guestPickerCell;
+@property(strong,nonatomic)UIPickerView *guestPicker;
 @property(strong,nonatomic)GuestNameTableViewCell *firstNameCell;
 @property(strong,nonatomic)GuestNameTableViewCell *lastNameCell;
 @property(strong,nonatomic)ButtonTableViewCell *reserveRoomCell;
+@property(nonatomic)BOOL showUsers;
+@property(strong,nonatomic)NSArray *guests;
+@property(nonatomic)CGFloat currentTableViewYOffset;
 
 @end
 
 @implementation ReserveRoomTableViewController
 
 -(void)loadView {
+  UILabel *titleLabel = [[UILabel alloc]initWithFrame:CGRectMake(0, 0, 50, 20)];
+  titleLabel.textColor = [HotelReservationsStyleKit blueDark];
+  titleLabel.font = [UIFont fontWithName:@"AvenirNext-DemiBold" size:18];
+  titleLabel.text = @"Make a Reservation";
+  self.navigationItem.titleView = titleLabel;
+  
   self.tableView = [[UITableView alloc]initWithFrame:CGRectZero style:UITableViewStyleGrouped];
   self.hotelNameCell = [[ReservationTableViewCell alloc]init];
   self.roomNumberCell = [[ReservationTableViewCell alloc]init];
@@ -42,31 +57,77 @@
   self.firstNameCell = [[GuestNameTableViewCell alloc]init];
   self.lastNameCell = [[GuestNameTableViewCell alloc]init];
   self.reserveRoomCell = [[ButtonTableViewCell alloc]init];
+  self.guestCell = [[PickerHeaderViewCell alloc]init];
+  self.guestPickerCell = [[UITableViewCell alloc]init];
+  self.guestPicker = [[UIPickerView alloc]init];
+  self.guestPicker.translatesAutoresizingMaskIntoConstraints = false;
+  [self.guestPickerCell addSubview:self.guestPicker];
+  self.guestPickerCell.clipsToBounds = true;
+  
+  NSLayoutConstraint *userPickerCenterYLayoutConstraint = [NSLayoutConstraint constraintWithItem:self.guestPicker attribute:NSLayoutAttributeCenterY relatedBy:NSLayoutRelationEqual toItem:self.guestPickerCell attribute:NSLayoutAttributeCenterY multiplier:1 constant:0];
+  [self.guestPickerCell addConstraint:userPickerCenterYLayoutConstraint];
+  NSLayoutConstraint *userPickerCenterXLayoutConstraint = [NSLayoutConstraint constraintWithItem:self.guestPicker attribute:NSLayoutAttributeCenterX relatedBy:NSLayoutRelationEqual toItem:self.guestPickerCell attribute:NSLayoutAttributeCenterX multiplier:1 constant:0];
+  [self.guestPickerCell addConstraint:userPickerCenterXLayoutConstraint];
 }
-
 
 - (void)viewDidLoad {
   [super viewDidLoad];
   
-  UILabel *titleLabel = [[UILabel alloc]initWithFrame:CGRectMake(0, 0, 50, 20)];
-  titleLabel.textColor = [HotelReservationsStyleKit blueDark];
-  titleLabel.font = [UIFont fontWithName:@"AvenirNext-DemiBold" size:22];
-  titleLabel.text = @"Make a Reservation";
-  self.navigationItem.titleView = titleLabel;
-  
-  
   [self.tableView registerClass:[ReservationTableViewCell class] forCellReuseIdentifier:@"ReservationCell"];
   [self.tableView registerClass:[ButtonTableViewCell class] forCellReuseIdentifier:@"ReserveCell"];
   [self.tableView registerClass:[GuestNameTableViewCell class] forCellReuseIdentifier:@"GuestNameCell"];
+  [self.tableView registerClass:[PickerHeaderViewCell class] forCellReuseIdentifier:@"UserPickerCell"];
+  
   self.firstNameCell.nameTextField.delegate = self;
   self.lastNameCell.nameTextField.delegate = self;
+  [self getGuestsForPicker];
+  self.guestPicker.dataSource = self;
+  self.guestPicker.delegate = self;
+  
+  self.showUsers = false;
+  self.guestCell.detailLabel.text = @"--Choose a Guest--";
+}
+
+-(NSInteger)numberOfDaysForReservation {
+  NSDate *fromDate;
+  NSDate *toDate;
+  
+  NSCalendar *calendar = [NSCalendar currentCalendar];
+  [calendar rangeOfUnit:NSCalendarUnitDay startDate:&fromDate interval:nil forDate:self.fromDate];
+  [calendar rangeOfUnit:NSCalendarUnitDay startDate:&toDate interval:nil forDate:self.toDate];
+  
+  NSDateComponents *difference = [calendar components:NSCalendarUnitDay fromDate:fromDate toDate:toDate options:0];
+  
+  return [difference day];
+}
+
+-(void)getGuestsForPicker {
+  AppDelegate *appDelegate = [UIApplication sharedApplication].delegate;
+  self.guests = [appDelegate.hotelService fetchAllGuests];
+}
+
+-(void)setUser {
+  NSInteger currentRow = [self.guestPicker selectedRowInComponent:0];
+  if (currentRow != 0) {
+    Guest *guest = self.guests[currentRow];
+    NSString *nameStr = [NSString stringWithFormat:@"%@, %@", guest.lastName, guest.firstName];
+    self.guestCell.detailLabel.text = nameStr;
+  } else {
+    self.guestCell.detailLabel.text = @"--Choose a Guest--";
+  }
+  if (self.showUsers) {
+    [self.tableView setContentOffset:CGPointMake(self.tableView.contentOffset.x, self.tableView.contentOffset.y + self.currentTableViewYOffset)];
+    [UIView animateWithDuration:0.5 animations:^{
+      [self.view layoutIfNeeded];
+    }];
+  }
 }
 
 //MARK:
 //MARK: UITableViewDataSource
 
 -(NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
-  return 4;
+  return 5;
 }
 
 -(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
@@ -75,6 +136,8 @@
   } else if (section == 1) {
     return 2;
   } else if (section == 2) {
+    return 2;
+  }  else if (section == 3) {
     return 2;
   } else {
     return 1;
@@ -104,8 +167,9 @@
         if (self.roomRateCell == nil) {
           self.roomRateCell = [self.roomRateCell initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"ReservationCell"];
         }
-        self.roomRateCell.nameLabel.text = @"Rate:";
-        self.roomRateCell.detailLabel.text = [NSString stringWithFormat:@"$%hd",self.selectedRoom.rate];
+        self.roomRateCell.nameLabel.text = @"Cost:";
+        long cost = [self numberOfDaysForReservation] * self.selectedRoom.rate;
+        self.roomRateCell.detailLabel.text = [NSString stringWithFormat:@"$%ld @ $%hd / night", cost, self.selectedRoom.rate];
         return self.roomRateCell;
         break;
       default:
@@ -136,7 +200,7 @@
         return [[UITableViewCell alloc]init];
         break;
     }
-  } else if (indexPath.section == 2){
+  } else if (indexPath.section == 2) {
     if (indexPath.row == 0) {
       if (self.firstNameCell == nil) {
         self.firstNameCell = [self.firstNameCell initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"GuestNameCell"];
@@ -152,6 +216,16 @@
       self.lastNameCell.nameTextField.placeholder = @"Enter your last name";
       return self.lastNameCell;
     }
+  } else if (indexPath.section == 3) {
+    if (indexPath.row == 0) {
+      if (self.guestCell == nil) {
+        self.guestCell = [tableView dequeueReusableCellWithIdentifier:@"UserPickerCell" forIndexPath:indexPath];
+        self.guestCell.infoLabel.text = @"User:";
+      }
+      return self.guestCell;
+    } else {
+      return self.guestPickerCell;
+    }
   } else {
     if (self.reserveRoomCell == nil) {
       self.reserveRoomCell = [self.reserveRoomCell initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"ReserveCell"];
@@ -166,19 +240,78 @@
 
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
   [self.tableView deselectRowAtIndexPath:indexPath animated:true];
+  [self setUser];
   if (indexPath.section == 2) {
     if (indexPath.row == 0) {
       [self.firstNameCell.nameTextField becomeFirstResponder];
     } else {
       [self.lastNameCell.nameTextField becomeFirstResponder];
     }
-  } else if (indexPath.section == 3) {
+  } else if (indexPath.section == 3 && indexPath.row == 0) {
+    self.showUsers = !self.showUsers;
+    [self.tableView setContentOffset:CGPointMake(self.tableView.contentOffset.x, self.tableView.contentOffset.y + 100)];
+    [UIView animateWithDuration:0.5 animations:^{
+      [self.view layoutIfNeeded];
+    }];
+    [self.tableView reloadData];
+  } else if (indexPath.section == 4) {
     AppDelegate *appDelegate = [UIApplication sharedApplication].delegate;
-  Guest *guest = [NSEntityDescription insertNewObjectForEntityForName:@"Guest" inManagedObjectContext:appDelegate.hotelService.coreDataStack.managedObjectContext];
-    guest.firstName = self.firstNameCell.nameTextField.text;
-    guest.lastName = self.lastNameCell.nameTextField.text;
+    
+    Guest *guest;
+    NSInteger currentRow = [self.guestPicker selectedRowInComponent:0];
+    if (currentRow != 0) {
+      guest = self.guests[currentRow - 1];
+    } else {
+      if (self.firstNameCell.nameTextField != nil && self.lastNameCell.nameTextField != nil) {
+        guest = [NSEntityDescription insertNewObjectForEntityForName:@"Guest" inManagedObjectContext:appDelegate.hotelService.coreDataStack.managedObjectContext];
+        guest.firstName = self.firstNameCell.nameTextField.text;
+        guest.lastName = self.lastNameCell.nameTextField.text;
+      }
+    }
     [appDelegate.hotelService makeReservationForRoom:self.selectedRoom withFromDate:self.fromDate andToDate:self.toDate forGuest:guest];
+    UINavigationController * navigationController = self.navigationController;
+    [self.navigationController popToRootViewControllerAnimated:false];
+    GuestReservationsTableViewController *guestReservationVC = [[GuestReservationsTableViewController alloc]init];
+    guestReservationVC.selectedGuest = guest;
+    [navigationController pushViewController:guestReservationVC animated:YES];
   }
+}
+
+-(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
+  if (indexPath.section == 3 && indexPath.row == 1) {
+    if (self.showUsers) {
+      return 209;
+    } else {
+      return 0;
+    }
+  }
+  return [super tableView:tableView heightForRowAtIndexPath:indexPath];
+}
+
+-(UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section {
+  if (section == 3) {
+    UIView *headerView = [[UIView alloc]initWithFrame:CGRectMake(0, 0, self.tableView.frame.size.width, [self tableView:tableView heightForHeaderInSection:section])];
+    headerView.backgroundColor = [UIColor clearColor];
+    UILabel *sectionLabel = [[UILabel alloc]init];
+    sectionLabel.textColor = [UIColor grayColor];
+    sectionLabel.translatesAutoresizingMaskIntoConstraints = false;
+    sectionLabel.text = @"--Or Select an Existing Guest--";
+    [headerView addSubview:sectionLabel];
+    
+    NSLayoutConstraint *sectionLabelCenterYLayoutConstraint = [NSLayoutConstraint constraintWithItem:sectionLabel attribute:NSLayoutAttributeCenterY relatedBy:NSLayoutRelationEqual toItem:headerView attribute:NSLayoutAttributeCenterY multiplier:1 constant:0];
+    [headerView addConstraint:sectionLabelCenterYLayoutConstraint];
+    NSLayoutConstraint *sectionLabelCenterXLayoutConstraint = [NSLayoutConstraint constraintWithItem:sectionLabel attribute:NSLayoutAttributeCenterX relatedBy:NSLayoutRelationEqual toItem:headerView attribute:NSLayoutAttributeCenterX multiplier:1 constant:0];
+    [headerView addConstraint:sectionLabelCenterXLayoutConstraint];
+    return headerView;
+  }
+  return [super tableView:tableView viewForHeaderInSection:section];
+}
+
+-(CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section {
+  if (section == 3) {
+    return 30;
+  }
+  return 15;
 }
 
 //MARK UITextFieldDelegate
@@ -188,9 +321,43 @@
   if (textField == self.firstNameCell.nameTextField) {
     [self.lastNameCell.nameTextField becomeFirstResponder];
   }
+  
+  [self.tableView setContentOffset:CGPointMake(self.tableView.contentOffset.x, self.tableView.contentOffset.y - self.currentTableViewYOffset)];
+  [UIView animateWithDuration:0.5 animations:^{
+    [self.view layoutIfNeeded];
+  }];
   return true;
 }
 
+-(void)textFieldDidBeginEditing:(UITextField *)textField {
+  if (textField == self.firstNameCell.nameTextField) {
+    self.currentTableViewYOffset = 100;
+  } else {
+    self.currentTableViewYOffset = 200;
+  }
+  [self.tableView setContentOffset:CGPointMake(self.tableView.contentOffset.x, self.tableView.contentOffset.y + self.currentTableViewYOffset)];
+  [UIView animateWithDuration:0.5 animations:^{
+    [self.view layoutIfNeeded];
+  }];
+}
 
+//MARK:
+//MARK: UIPickerViewDelagate
+
+-(NSInteger)pickerView:(UIPickerView *)pickerView numberOfRowsInComponent:(NSInteger)component {
+  return self.guests.count + 1;
+}
+
+-(NSInteger)numberOfComponentsInPickerView:(UIPickerView *)pickerView {
+  return 1;
+}
+
+-(NSString *)pickerView:(UIPickerView *)pickerView titleForRow:(NSInteger)row forComponent:(NSInteger)component {
+  if (row == 0) {
+    return @"Choose a Guest";
+  }
+  Guest *guest = self.guests[row - 1];
+  return [NSString stringWithFormat:@"%@, %@", guest.lastName, guest.firstName];
+}
 
 @end

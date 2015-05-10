@@ -10,6 +10,7 @@
 #import "CoreDataStack.h"
 @class Room;
 @class Guest;
+@class Reservation;
 
 
 @interface HotelService : NSObject
@@ -20,9 +21,11 @@
 
 -(NSArray *)fetchAllHotels;
 
--(NSFetchedResultsController *) produceFetchResultsControllerForAvailableRoomsFromDate:(NSDate *)fromDate toDate:(NSDate *)toDate withBedCount:(int16_t)bedCount;
+-(NSFetchedResultsController *) produceFetchResultsControllerForAvailableRoomsFromDate:(NSDate *)fromDate toDate:(NSDate *)toDate withBedCount:(int16_t)bedCount andLocation:(NSString *)location;
 
 -(void)makeReservationForRoom:(Room *)room withFromDate:(NSDate *)fromDate andToDate:(NSDate *)toDate forGuest:(Guest *)guest;
+
 -(NSArray *)fetchAllGuests;
 
+-(void)deleteReservation:(Reservation *)reservation;
 @end

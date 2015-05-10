@@ -8,9 +8,9 @@
 
 #import <UIKit/UIKit.h>
 
-@interface DateTableViewCell : UITableViewCell
+@interface PickerHeaderViewCell : UITableViewCell
 
-@property(strong,nonatomic)UILabel *fromToLabel;
-@property(strong,nonatomic)UILabel *dateLabel;
+@property(strong,nonatomic)UILabel *infoLabel;
+@property(strong,nonatomic)UILabel *detailLabel;
 
 @end

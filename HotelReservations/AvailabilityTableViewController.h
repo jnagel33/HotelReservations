@@ -13,5 +13,6 @@
 @property(strong,nonatomic)NSDate *fromDate;
 @property(strong,nonatomic)NSDate *toDate;
 @property(nonatomic)int16_t bedCount;
+@property(strong,nonatomic)NSString *location;
 
 @end

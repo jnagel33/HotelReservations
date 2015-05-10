@@ -7,7 +7,6 @@
 //
 
 #import "NumberOfBedsTableViewCell.h"
-#import "HotelReservationsStyleKit.h"
 
 @interface NumberOfBedsTableViewCell ()
 
@@ -27,14 +26,14 @@
     self.bedsLabel.translatesAutoresizingMaskIntoConstraints = false;
     [self.customContainerView addSubview:self.bedsLabel];
     self.minusButton = [UIButton buttonWithType:UIButtonTypeCustom];
-    [self.minusButton setImage:[HotelReservationsStyleKit imageOfMinusButtonWithFrame:self.contentView.frame] forState:UIControlStateNormal];
-    [self.minusButton setImage:[HotelReservationsStyleKit imageOfMinusButtonWithFrame:self.contentView.frame] forState:UIControlStateHighlighted];
+    [self.minusButton setImage:[UIImage imageNamed:@"MinusButton"] forState:UIControlStateNormal];
+    [self.minusButton setImage:[UIImage imageNamed:@"MinusButton"] forState:UIControlStateHighlighted];
     self.minusButton.translatesAutoresizingMaskIntoConstraints = false;
     [self.customContainerView addSubview:self.minusButton];
     
     self.plusButton = [UIButton buttonWithType:UIButtonTypeCustom];
-    [self.plusButton setImage:[HotelReservationsStyleKit imageOfPlusButtonWithFrame:self.contentView.frame] forState:UIControlStateNormal];
-    [self.plusButton setImage:[HotelReservationsStyleKit imageOfPlusButtonWithFrame:self.contentView.frame] forState:UIControlStateHighlighted];
+    [self.plusButton setImage:[UIImage imageNamed:@"PlusButton"] forState:UIControlStateNormal];
+    [self.plusButton setImage:[UIImage imageNamed:@"PlusButton"] forState:UIControlStateHighlighted];
     self.plusButton.translatesAutoresizingMaskIntoConstraints = false;
     [self.customContainerView addSubview:self.plusButton];
     
@@ -52,31 +51,29 @@
   NSLayoutConstraint *containerViewYLayoutConstraint = [NSLayoutConstraint constraintWithItem:self.customContainerView attribute:NSLayoutAttributeCenterY relatedBy:NSLayoutRelationEqual toItem:self.contentView attribute:NSLayoutAttributeCenterY multiplier:1 constant:0];
   [self.contentView addConstraint:containerViewYLayoutConstraint];
   
-  NSLayoutConstraint *containerViewXLayoutConstraint = [NSLayoutConstraint constraintWithItem:self.customContainerView attribute:NSLayoutAttributeCenterY relatedBy:NSLayoutRelationEqual toItem:self.contentView attribute:NSLayoutAttributeCenterY multiplier:1 constant:0];
+  NSLayoutConstraint *containerViewXLayoutConstraint = [NSLayoutConstraint constraintWithItem:self.customContainerView attribute:NSLayoutAttributeCenterX relatedBy:NSLayoutRelationEqual toItem:self.contentView attribute:NSLayoutAttributeCenterX multiplier:1 constant:0];
   [self.contentView addConstraint:containerViewXLayoutConstraint];
   
   NSArray *vContainerViewLayoutConstraints = [NSLayoutConstraint constraintsWithVisualFormat:@"V:|[containerView]|" options:0 metrics:nil views:views];
   [self.contentView addConstraints:vContainerViewLayoutConstraints];
   
-  NSArray *hContainerViewLayoutConstraints = [NSLayoutConstraint constraintsWithVisualFormat:@"H:|-75-[containerView]-80-|" options:0 metrics:nil views:views];
-  [self.contentView addConstraints:hContainerViewLayoutConstraints];
-  
-  NSArray *hContainerSubviewsLayoutConstraints = [NSLayoutConstraint constraintsWithVisualFormat:@"H:|[minusButton]-[bedsLabel(80)]-[plusButton]|" options:0 metrics:nil views:views];
+  NSArray *hContainerSubviewsLayoutConstraints = [NSLayoutConstraint constraintsWithVisualFormat:@"H:|[minusButton(40)]-[bedsLabel(80)]-[plusButton(40)]|" options:0 metrics:nil views:views];
   [self.customContainerView addConstraints:hContainerSubviewsLayoutConstraints];
-  
-  
-  NSArray *vMinusButtonLayoutConstraints = [NSLayoutConstraint constraintsWithVisualFormat:@"V:|[minusButton]|" options:0 metrics:nil views:views];
-  [self.customContainerView addConstraints:vMinusButtonLayoutConstraints];
-  
-  NSArray *vPlusButtonLayoutConstraints = [NSLayoutConstraint constraintsWithVisualFormat:@"V:|[plusButton]|" options:0 metrics:nil views:views];
-  [self.customContainerView addConstraints:vPlusButtonLayoutConstraints];
   
   NSArray *vBedsLabelLayoutConstraint = [NSLayoutConstraint constraintsWithVisualFormat:@"V:|[bedsLabel]|" options:0 metrics:nil views:views];
   [self.customContainerView addConstraints:vBedsLabelLayoutConstraint];
   
+  NSArray *vMinusButtonHeightLayoutConstraint = [NSLayoutConstraint constraintsWithVisualFormat:@"V:[minusButton(40)]" options:0 metrics:nil views:views];
+  [self.customContainerView addConstraints:vMinusButtonHeightLayoutConstraint];\
   
-  NSLayoutConstraint *buttonEqualWidthLayoutConstraint = [NSLayoutConstraint constraintWithItem:self.plusButton attribute:NSLayoutAttributeWidth relatedBy:NSLayoutRelationEqual toItem:self.minusButton attribute:NSLayoutAttributeWidth multiplier:1 constant:0];
-  [self.customContainerView addConstraint:buttonEqualWidthLayoutConstraint];
+  NSArray *vPlusButtonHeightLayoutConstraint = [NSLayoutConstraint constraintsWithVisualFormat:@"V:[plusButton(40)]" options:0 metrics:nil views:views];
+  [self.customContainerView addConstraints:vPlusButtonHeightLayoutConstraint];
+  
+  NSLayoutConstraint *minusButtonCenterYLayoutConstraint = [NSLayoutConstraint constraintWithItem:self.minusButton attribute:NSLayoutAttributeCenterY relatedBy:NSLayoutRelationEqual toItem:self.customContainerView attribute:NSLayoutAttributeCenterY multiplier:1 constant:0];
+  [self.customContainerView addConstraint:minusButtonCenterYLayoutConstraint];
+  
+  NSLayoutConstraint *plusButtonCenterYLayoutConstraint = [NSLayoutConstraint constraintWithItem:self.plusButton attribute:NSLayoutAttributeCenterY relatedBy:NSLayoutRelationEqual toItem:self.customContainerView attribute:NSLayoutAttributeCenterY multiplier:1 constant:0];
+  [self.customContainerView addConstraint:plusButtonCenterYLayoutConstraint];
 }
 
 @end

@@ -93,13 +93,13 @@
   NSCalendar *calendar = [NSCalendar currentCalendar];
   NSDate *tomorrow = [calendar dateByAddingUnit:NSCalendarUnitDay value:1 toDate:today options:0];
   
-  NSFetchedResultsController *fetchedResultsController = [self.hotelService produceFetchResultsControllerForAvailableRoomsFromDate:today toDate:tomorrow withBedCount:bedCount];
+  NSFetchedResultsController *fetchedResultsController = [self.hotelService produceFetchResultsControllerForAvailableRoomsFromDate:today toDate:tomorrow withBedCount:bedCount andLocation:@"Location"];
   NSError *fetchError;
   [fetchedResultsController performFetch:&fetchError];
   XCTAssert(fetchedResultsController.sections.count == 1, @"Failed fetch for available rooms with no reservations");
 }
 
--(void)testFetchAvailableRoomsWithReservation {
+-(void)testFetchAvailableRoomsWithReservationNoLocation {
   int16_t bedCount = 1;
   Hotel *hotel = [self setupHotelWithName:@"test"];
   Room *room = [self setupRoomWithNumber:1 Andrate:1 AndBeds:bedCount AndHotel:hotel];
@@ -108,8 +108,21 @@
   NSDate *tomorrow = [calendar dateByAddingUnit:NSCalendarUnitDay value:1 toDate:today options:0];
   Guest *guest = [self setUpGuestWithFirstName:@"test" AndLastName:@"test"];
   [self setupReservationWithFromDate:today AndToDate:tomorrow AndRoom:room AndReservation:guest];
-  NSFetchedResultsController *fetchedResultsController = [self.hotelService produceFetchResultsControllerForAvailableRoomsFromDate:today toDate:tomorrow withBedCount:bedCount];
-  XCTAssert(fetchedResultsController.sections.count == 0, @"Failed fetch for available rooms with reservations");
+  NSFetchedResultsController *fetchedResultsController = [self.hotelService produceFetchResultsControllerForAvailableRoomsFromDate:today toDate:tomorrow withBedCount:bedCount andLocation:nil];
+  XCTAssert(fetchedResultsController.sections.count == 0, @"Failed fetch for available rooms with reservations without location");
+}
+
+-(void)testFetchAvailableRoomsWithReservationWithLocation {
+  int16_t bedCount = 1;
+  Hotel *hotel = [self setupHotelWithName:@"test"];
+  Room *room = [self setupRoomWithNumber:1 Andrate:1 AndBeds:bedCount AndHotel:hotel];
+  NSDate *today = [NSDate date];
+  NSCalendar *calendar = [NSCalendar currentCalendar];
+  NSDate *tomorrow = [calendar dateByAddingUnit:NSCalendarUnitDay value:1 toDate:today options:0];
+  Guest *guest = [self setUpGuestWithFirstName:@"test" AndLastName:@"test"];
+  [self setupReservationWithFromDate:today AndToDate:tomorrow AndRoom:room AndReservation:guest];
+  NSFetchedResultsController *fetchedResultsController = [self.hotelService produceFetchResultsControllerForAvailableRoomsFromDate:today toDate:tomorrow withBedCount:bedCount andLocation:nil];
+  XCTAssert(fetchedResultsController.sections.count == 0, @"Failed fetch for available rooms with reservations with location");
 }
 
 - (void)testPerformanceExample {

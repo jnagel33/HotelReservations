@@ -16,34 +16,68 @@
 #import "Hotel.h"
 #import "ReserveRoomTableViewController.h"
 #import "HotelReservationsStyleKit.h"
+#import "SearchTableViewHeaderView.h"
+#import "MainDetailImageTableViewCell.h"
+#import "ImageResizer.h"
 
 @interface AvailabilityTableViewController () <NSFetchedResultsControllerDelegate>
 
 @property (strong,nonatomic) NSFetchedResultsController *fetchedResultsController;
-
 @property(strong,nonatomic)NSDateFormatter *dateFormatter;
+@property(strong,nonatomic)UIView *tableViewHeaderView;
+@property(strong,nonatomic)UILabel *dateRangeLabel;
+@property(strong,nonatomic)UILabel *locationLabel;
+@property(strong,nonatomic)UILabel *bedsLabel;
+
 
 @end
 
 @implementation AvailabilityTableViewController
 
+-(void)loadView {
+  [super loadView];
+  self.tableViewHeaderView = [[SearchTableViewHeaderView alloc]initWithFrame:CGRectMake(0, 0, self.tableView.frame.size.width, 60)];
+  self.dateRangeLabel = [[UILabel alloc]init];
+  self.dateRangeLabel.textColor = [UIColor whiteColor];
+  self.dateRangeLabel.translatesAutoresizingMaskIntoConstraints = false;
+  [self.tableViewHeaderView addSubview:self.dateRangeLabel];
+  self.locationLabel = [[UILabel alloc]init];
+  self.locationLabel.textColor = [UIColor whiteColor];
+  self.locationLabel.translatesAutoresizingMaskIntoConstraints = false;
+  [self.tableViewHeaderView addSubview:self.locationLabel];
+  self.bedsLabel = [[UILabel alloc]init];
+  self.bedsLabel.textColor = [UIColor whiteColor];
+  self.bedsLabel.translatesAutoresizingMaskIntoConstraints = false;
+  [self.tableViewHeaderView addSubview:self.bedsLabel];
+  NSDictionary *views = @{@"dateRangeLabel": self.dateRangeLabel, @"locationLabel": self.locationLabel, @"bedsLabel": self.bedsLabel};
+  [self setConstraintsWithViews:views];
+  
+  [self.tableView setTableHeaderView:self.tableViewHeaderView];
+}
+
 - (void)viewDidLoad {
   [super viewDidLoad];
-  
-  self.dateFormatter = [[NSDateFormatter alloc]init];
-  self.dateFormatter.dateFormat = @"MMM d";
-  NSString *fromDateStr = [self.dateFormatter stringFromDate:self.fromDate];
-  NSString *toDateStr = [self.dateFormatter stringFromDate:self.toDate];
-  
   UILabel *titleLabel = [[UILabel alloc]initWithFrame:CGRectMake(0, 0, 50, 20)];
   titleLabel.textColor = [HotelReservationsStyleKit blueDark];
-  titleLabel.font = [UIFont fontWithName:@"AvenirNext-DemiBold" size:22];
-  titleLabel.text = [NSString stringWithFormat:@"%@th to %@th", fromDateStr, toDateStr];
+  titleLabel.font = [UIFont fontWithName:@"AvenirNext-DemiBold" size:18];
+  titleLabel.text = @"Search Results";
   self.navigationItem.titleView = titleLabel;
   
-  [self.tableView registerClass:[UITableViewCell class] forCellReuseIdentifier:@"AvailableRoomsCell"];
+  self.dateFormatter = [[NSDateFormatter alloc]init];
+  self.dateFormatter.dateFormat = @"M/dd";
+  NSString *fromDateStr = [self.dateFormatter stringFromDate:self.fromDate];
+  NSString *toDateStr = [self.dateFormatter stringFromDate:self.toDate];
+  self.dateRangeLabel.text = [NSString stringWithFormat:@"%@-%@", fromDateStr, toDateStr];
+  if (self.location != nil) {
+    self.locationLabel.text = self.location;
+  } else {
+    self.locationLabel.text = @"All";
+  }
+  self.bedsLabel.text = [NSString stringWithFormat:@"%hd+ beds",self.bedCount];
+  
+[self.tableView registerClass:[MainDetailImageTableViewCell class]forCellReuseIdentifier:@"AvailableRoomsCell"];
   AppDelegate *appDelegate = [UIApplication sharedApplication].delegate;
-  self.fetchedResultsController = [appDelegate.hotelService produceFetchResultsControllerForAvailableRoomsFromDate:self.fromDate toDate:self.toDate withBedCount:self.bedCount];
+  self.fetchedResultsController = [appDelegate.hotelService produceFetchResultsControllerForAvailableRoomsFromDate:self.fromDate toDate:self.toDate withBedCount:self.bedCount andLocation:self.location];
   self.fetchedResultsController.delegate = self;
   NSError *fetchError;
   [self.fetchedResultsController performFetch:&fetchError];
@@ -65,7 +99,7 @@
       [self.tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
       break;
     case NSFetchedResultsChangeUpdate:
-      [self configureCell:[self.tableView cellForRowAtIndexPath:indexPath] atIndexPath:indexPath];
+      [self tableView:self.tableView cellForRowAtIndexPath:indexPath];
       break;
     case NSFetchedResultsChangeMove:
       [self.tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
@@ -94,7 +128,7 @@
 }
 
 -(UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-  UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"AvailableRoomsCell" forIndexPath:indexPath];
+  MainDetailImageTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"AvailableRoomsCell" forIndexPath:indexPath];
   [self configureCell:cell atIndexPath:indexPath];
   return cell;
 }
@@ -104,9 +138,15 @@
 }
 
 
--(void)configureCell:(UITableViewCell *)cell atIndexPath:(NSIndexPath *)indexPath {
-    Room *room = [self.fetchedResultsController objectAtIndexPath:indexPath];
-    cell.textLabel.text = [NSString stringWithFormat:@"%hd",room.number];
+-(void)configureCell:(MainDetailImageTableViewCell *)cell atIndexPath:(NSIndexPath *)indexPath {
+  Room *room = [self.fetchedResultsController objectAtIndexPath:indexPath];
+  cell.mainLabel.text = [NSString stringWithFormat:@"Room #%hd",room.number];
+  cell.detailLabel.text = [NSString stringWithFormat:@"$%hd / night",room.rate];
+  if (room.actualImage == nil && room.image != nil) {
+    UIImage *roomImage = [UIImage imageWithData:room.image];
+    room.actualImage = roomImage;
+  }
+  cell.mainImageView.image = room.actualImage;
 }
 
 -(UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section {
@@ -141,6 +181,29 @@
   reserveRoomVC.fromDate = self.fromDate;
   reserveRoomVC.toDate = self.toDate;
   [self.navigationController pushViewController:reserveRoomVC animated:true];
+}
+
+-(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
+  return 100;
+}
+
+//MARK: Constraints
+
+-(void)setConstraintsWithViews:(NSDictionary *)dictionary {
+  NSArray *hTableViewHeaderSubviews = [NSLayoutConstraint constraintsWithVisualFormat:@"H:|-10-[dateRangeLabel][bedsLabel]-10-|" options:0 metrics:nil views:dictionary];
+  [self.tableViewHeaderView addConstraints:hTableViewHeaderSubviews];
+
+  NSLayoutConstraint *dateRangeLabelCenterYLayoutConstraint = [NSLayoutConstraint constraintWithItem:self.dateRangeLabel attribute:NSLayoutAttributeCenterY relatedBy:NSLayoutRelationEqual toItem:self.tableViewHeaderView attribute:NSLayoutAttributeCenterY multiplier:1 constant:0];
+  [self.tableViewHeaderView addConstraint:dateRangeLabelCenterYLayoutConstraint];
+  
+  NSLayoutConstraint *locationLabelCenterYLayoutConstraint = [NSLayoutConstraint constraintWithItem:self.locationLabel attribute:NSLayoutAttributeCenterY relatedBy:NSLayoutRelationEqual toItem:self.tableViewHeaderView attribute:NSLayoutAttributeCenterY multiplier:1 constant:0];
+  [self.tableViewHeaderView addConstraint:locationLabelCenterYLayoutConstraint];
+  
+  NSLayoutConstraint *locationLabelCenterXLayoutConstraint = [NSLayoutConstraint constraintWithItem:self.locationLabel attribute:NSLayoutAttributeCenterX relatedBy:NSLayoutRelationEqual toItem:self.tableViewHeaderView attribute:NSLayoutAttributeCenterX multiplier:1 constant:0];
+  [self.tableViewHeaderView addConstraint:locationLabelCenterXLayoutConstraint];
+  
+  NSLayoutConstraint *bedsLabelCenterYLayoutConstraint = [NSLayoutConstraint constraintWithItem:self.bedsLabel attribute:NSLayoutAttributeCenterY relatedBy:NSLayoutRelationEqual toItem:self.tableViewHeaderView attribute:NSLayoutAttributeCenterY multiplier:1 constant:0];
+  [self.tableViewHeaderView addConstraint:bedsLabelCenterYLayoutConstraint];
 }
 
 @end

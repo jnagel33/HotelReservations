@@ -36,7 +36,7 @@
   [super viewDidLoad];
   UILabel *titleLabel = [[UILabel alloc]initWithFrame:CGRectMake(0, 0, 50, 20)];
   titleLabel.textColor = [HotelReservationsStyleKit blueDark];
-  titleLabel.font = [UIFont fontWithName:@"AvenirNext-DemiBold" size:22];
+  titleLabel.font = [UIFont fontWithName:@"AvenirNext-DemiBold" size:18];
   titleLabel.text = @"Main Menu";
   [self.tableView registerClass:[RoomTableViewCell class] forCellReuseIdentifier:@"RoomCell"];
   self.tableView.dataSource = self;

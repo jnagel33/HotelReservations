@@ -9,6 +9,7 @@
 #import "HotelService.h"
 #import "CoreDataStack.h"
 #import "Reservation.h"
+#import "RandomConfirmationIDGenerator.h"
 
 @implementation HotelService
 
@@ -33,7 +34,7 @@
   return allHotels;
 }
 
--(NSFetchedResultsController *) produceFetchResultsControllerForAvailableRoomsFromDate:(NSDate *)fromDate toDate:(NSDate *)toDate withBedCount:(int16_t)bedCount {
+-(NSFetchedResultsController *) produceFetchResultsControllerForAvailableRoomsFromDate:(NSDate *)fromDate toDate:(NSDate *)toDate withBedCount:(int16_t)bedCount andLocation:(NSString *)location {
   [NSFetchedResultsController deleteCacheWithName:@"AvailableRoomsCache"];
   NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:@"Reservation"];
   NSPredicate *predicate = [NSPredicate predicateWithFormat:@"startDate <= %@ AND endDate >= %@", toDate, fromDate];
@@ -49,8 +50,13 @@
   NSFetchRequest *finalRequest = [NSFetchRequest fetchRequestWithEntityName:@"Room"];
   NSSortDescriptor *hotelNameSortDescriptor = [[NSSortDescriptor alloc]initWithKey:@"hotel.name" ascending:false];
   finalRequest.sortDescriptors = @[hotelNameSortDescriptor];
-  NSPredicate *finalPredicate = [NSPredicate predicateWithFormat:@"NOT self IN %@ AND beds >= %@", rooms, @(bedCount)];
-  finalRequest.predicate = finalPredicate;
+  
+  NSPredicate *mainPredicate = [NSPredicate predicateWithFormat:@"NOT self IN %@ AND beds >= %@", rooms, @(bedCount)];
+  if (location != nil) {
+    NSPredicate *locationPredicate = [NSPredicate predicateWithFormat:@"hotel.location == %@", location];
+    mainPredicate = [NSCompoundPredicate andPredicateWithSubpredicates:@[mainPredicate,locationPredicate]];
+  }
+  finalRequest.predicate = mainPredicate;
   
   NSFetchedResultsController *fetchedResultsController = [[NSFetchedResultsController alloc]initWithFetchRequest:finalRequest managedObjectContext:self.coreDataStack.managedObjectContext sectionNameKeyPath:@"hotel.name" cacheName:@"AvailableRoomsCache"];
   
@@ -62,6 +68,7 @@
   reservation.room = room;
   reservation.startDate = fromDate;
   reservation.endDate = toDate;
+  reservation.confirmationID = [RandomConfirmationIDGenerator generateConfirmationID];
   NSSet *guests = [NSSet setWithObjects:guest, nil];
   reservation.guests = guests;
   
@@ -82,6 +89,15 @@
     return nil;
   }
   return guests;
+}
+
+-(void)deleteReservation:(Reservation *)reservation {
+  [self.coreDataStack.managedObjectContext deleteObject:reservation];
+  NSError *deleteError;
+  [self.coreDataStack.managedObjectContext save:&deleteError];
+  if (deleteError != nil) {
+    NSLog(@"%@",deleteError.localizedDescription);
+  }
 }
 
 @end

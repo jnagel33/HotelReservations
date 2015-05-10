@@ -7,7 +7,7 @@
 //
 
 #import "MainMenuTableViewController.h"
-#import "DateTableViewCell.h"
+#import "PickerHeaderViewCell.h"
 #import "HotelListViewController.h"
 #import "ButtonTableViewCell.h"
 #import "AvailabilityTableViewController.h"
@@ -16,28 +16,35 @@
 #import "NumberOfBedsTableViewCell.h"
 #import "GuestTableViewController.h"
 #import "DateValidationService.h"
+#import "Hotel.h"
+#import "HotelService.h"
+#import "AppDelegate.h"
+#import "HotelReservationsStyleKit.h"
 
 const NSInteger kMaxBedsCount = 3;
 const NSInteger kMinBedsCount = 1;
 
+@interface MainMenuTableViewController () <UIPickerViewDataSource, UIPickerViewDelegate>
 
-@interface MainMenuTableViewController ()
-
-@property(strong,nonatomic)DateTableViewCell *fromCell;
-@property(strong,nonatomic)DateTableViewCell *toCell;
+@property(strong,nonatomic)PickerHeaderViewCell *fromCell;
+@property(strong,nonatomic)PickerHeaderViewCell *toCell;
 @property(strong,nonatomic)UITableViewCell *fromDateCell;
 @property(strong,nonatomic)UITableViewCell *toDateCell;
 @property(strong,nonatomic)UITableViewCell *searchHotelsCell;
 @property(strong,nonatomic)UITableViewCell *searchCustomersCell;
 @property(strong,nonatomic)ButtonTableViewCell *searchButtonCell;
 @property(strong,nonatomic)NumberOfBedsTableViewCell *numberOfBedsCell;
+@property(strong,nonatomic)PickerHeaderViewCell *locationCell;
+@property(strong,nonatomic)UITableViewCell *locationPickerCell;
+@property(strong,nonatomic)UIPickerView *locationPicker;
 @property(strong, nonatomic)UIDatePicker *fromDatePicker;
 @property(strong, nonatomic)UIDatePicker *toDatePicker;
 @property(nonatomic)BOOL showFromDate;
 @property(nonatomic)BOOL showToDate;
+@property(nonatomic)BOOL showLocation;
 @property(strong,nonatomic)NSDateFormatter *dateFormatter;
 @property(nonatomic)int16_t bedCount;
-
+@property(strong,nonatomic)NSMutableArray *locations;
 
 @end
 
@@ -45,8 +52,8 @@ const NSInteger kMinBedsCount = 1;
 
 -(void)loadView {
   self.tableView = [[UITableView alloc]initWithFrame:CGRectZero style:UITableViewStyleGrouped];
-  self.fromCell = [[DateTableViewCell alloc]init];
-  self.toCell = [[DateTableViewCell alloc]init];
+  self.fromCell = [[PickerHeaderViewCell alloc]init];
+  self.toCell = [[PickerHeaderViewCell alloc]init];
   self.fromDateCell = [[UITableViewCell alloc]init];
   self.fromDatePicker = [[UIDatePicker alloc]init];
   self.fromDatePicker.translatesAutoresizingMaskIntoConstraints = false;
@@ -61,10 +68,16 @@ const NSInteger kMinBedsCount = 1;
   self.searchHotelsCell.textLabel.text = @"Search Hotels";
   [self.searchHotelsCell setAccessoryType:UITableViewCellAccessoryDisclosureIndicator];
   self.searchCustomersCell = [[UITableViewCell alloc]init];
-  self.searchCustomersCell.textLabel.text = @"Search Customers";
+  self.searchCustomersCell.textLabel.text = @"Search Guests";
   [self.searchCustomersCell setAccessoryType:UITableViewCellAccessoryDisclosureIndicator];
   self.searchButtonCell = [[ButtonTableViewCell alloc]init];
   self.numberOfBedsCell = [[NumberOfBedsTableViewCell alloc]init];
+  self.locationPickerCell = [[UITableViewCell alloc]init];
+  self.locationPicker = [[UIPickerView alloc]init];
+  self.locationPicker.translatesAutoresizingMaskIntoConstraints = false;
+  [self.locationPickerCell addSubview:self.locationPicker];
+  self.locationPickerCell.clipsToBounds = true;
+  self.locationCell = [[PickerHeaderViewCell alloc]init];
   [self setupConstraints];
 }
 
@@ -72,7 +85,7 @@ const NSInteger kMinBedsCount = 1;
   [super viewDidLoad];
   UILabel *titleLabel = [[UILabel alloc]initWithFrame:CGRectMake(0, 0, 50, 20)];
   titleLabel.textColor = [HotelReservationsStyleKit blueDark];
-  titleLabel.font = [UIFont fontWithName:@"AvenirNext-DemiBold" size:22];
+  titleLabel.font = [UIFont fontWithName:@"AvenirNext-DemiBold" size:18];
   titleLabel.text = @"Main Menu";
   
   self.navigationItem.titleView = titleLabel;
@@ -81,7 +94,8 @@ const NSInteger kMinBedsCount = 1;
   self.toDatePicker.datePickerMode = UIDatePickerModeDate;
   self.dateFormatter = [[NSDateFormatter alloc]init];
   self.dateFormatter.dateFormat = @"EEEE, MMMM dd";
-  [self.tableView registerClass:[DateTableViewCell class]forCellReuseIdentifier:@"FromToCell"];
+  [self.tableView registerClass:[PickerHeaderViewCell class]forCellReuseIdentifier:@"DatePickerHeaderViewCell"];
+  [self.tableView registerClass:[PickerHeaderViewCell class]forCellReuseIdentifier:@"LocationPickerHeaderViewCell"];
   [self.tableView registerClass:[ButtonTableViewCell class]forCellReuseIdentifier:@"SearchButtonCell"];
   [self.tableView registerClass:[UITableViewCell class]forCellReuseIdentifier:@"SearchCell"];
   [self.tableView registerClass:[NumberOfBedsTableViewCell class] forCellReuseIdentifier:@"NumberBedsCell"];
@@ -89,7 +103,20 @@ const NSInteger kMinBedsCount = 1;
   self.tableView.delegate = self;
   self.showFromDate = false;
   self.showToDate = false;
+  self.showLocation = false;
   self.bedCount = 1;
+  
+  AppDelegate *appDelegate = [UIApplication sharedApplication].delegate;
+  NSArray *hotels = [appDelegate.hotelService fetchAllHotels];
+  self.locations = [[NSMutableArray alloc]init];
+  for (Hotel *hotel in hotels) {
+    [self.locations addObject:hotel.location];
+  }
+  self.fromCell.detailLabel.text = @"--Choose a Date";
+  self.toCell.detailLabel.text = @"--Choose a Date";
+  self.locationCell.detailLabel.text = @"--Choose a Location--";
+  self.locationPicker.delegate = self;
+  self.locationPicker.dataSource = self;
 }
 
 -(void)toggleFromDatePicker:(BOOL)value {
@@ -118,6 +145,15 @@ const NSInteger kMinBedsCount = 1;
   }];
 }
 
+-(void)toggleToLocationPickerOrSetWith:(BOOL)value {
+  if (value) {
+    self.showLocation = false;
+  } else {
+    self.showLocation = !self.showLocation;
+  }
+    [self.tableView reloadData];
+}
+
 -(void)plusMinusPressed:(UIButton *)sender {
   if (sender == self.numberOfBedsCell.plusButton) {
     self.bedCount++;
@@ -133,17 +169,26 @@ const NSInteger kMinBedsCount = 1;
 }
 
 -(void)setDates {
-  self.fromCell.dateLabel.textColor = [UIColor blackColor];
-  self.toCell.dateLabel.textColor = [UIColor blackColor];
+  self.fromCell.detailLabel.textColor = [HotelReservationsStyleKit blueDark];
+  self.toCell.detailLabel.textColor = [HotelReservationsStyleKit blueDark];
   if ([DateValidationService validateFromDateIsTodayOrLater:self.fromDatePicker.date]) {
     NSString *fromDateStr = [self.dateFormatter stringFromDate:self.fromDatePicker.date];
-    self.fromCell.dateLabel.text = fromDateStr;
+    self.fromCell.detailLabel.text = fromDateStr;
   } else {
-    self.fromCell.dateLabel.text = @"From date cannot be in the past";
-    self.fromCell.dateLabel.textColor = [UIColor redColor];
+    self.fromCell.detailLabel.text = @"Date cannot be in the past";
+    self.fromCell.detailLabel.textColor = [UIColor redColor];
   }
   NSString *toDateStr = [self.dateFormatter stringFromDate:self.toDatePicker.date];
-  self.toCell.dateLabel.text = toDateStr;
+  self.toCell.detailLabel.text = toDateStr;
+}
+
+-(void)setLocation {
+  NSInteger currentRow = [self.locationPicker selectedRowInComponent:0];
+  if (currentRow != 0) {
+    self.locationCell.detailLabel.text = self.locations[currentRow - 1];
+  } else {
+    self.locationCell.detailLabel.text = @"--Choose a Location--";
+  }
 }
 
 //MARK:
@@ -151,7 +196,7 @@ const NSInteger kMinBedsCount = 1;
 
 -(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
   if (section == 0) {
-    return 6;
+    return 8;
   } else {
     return 2;
   }
@@ -163,9 +208,10 @@ const NSInteger kMinBedsCount = 1;
       switch (indexPath.row) {
         case 0:
           if (self.fromCell == nil) {
-            self.fromCell = [self.fromCell initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"FromToCell"];
+            self.fromCell = [tableView dequeueReusableCellWithIdentifier:@"DatePickerHeaderViewCell" forIndexPath:indexPath];
+            self.fromCell.detailLabel.text = @"--Choose a Date--";
           }
-          self.fromCell.fromToLabel.text = @"From:";
+          self.fromCell.infoLabel.text = @"From:";
           return self.fromCell;
           break;
         case 1:
@@ -173,15 +219,27 @@ const NSInteger kMinBedsCount = 1;
           break;
         case 2:
           if (self.toCell == nil) {
-            self.toCell = [self.toCell initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"FromToCell"];
+            self.toCell = [tableView dequeueReusableCellWithIdentifier:@"DatePickerHeaderViewCell" forIndexPath:indexPath];
+            self.toCell.detailLabel.text = @"--Choose a Date--";
           }
-          self.toCell.fromToLabel.text = @"To:";
+          self.toCell.infoLabel.text = @"To:";
           return self.toCell;
           break;
         case 3:
           return self.toDateCell;
           break;
         case 4:
+          if (self.locationCell == nil) {
+            self.locationCell = [tableView dequeueReusableCellWithIdentifier:@"LocationPickerHeaderViewCell" forIndexPath:indexPath];
+            self.locationCell.detailLabel.text = @"--Choose a Location--";
+          }
+          self.locationCell.infoLabel.text = @"Location:";
+          return self.locationCell;
+          break;
+        case 5:
+          return self.locationPickerCell;
+          break;
+        case 6:
           if (self.numberOfBedsCell == nil) {
             self.numberOfBedsCell = [self.numberOfBedsCell initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"NumberBedsCell"];
           }
@@ -189,7 +247,7 @@ const NSInteger kMinBedsCount = 1;
           [self.numberOfBedsCell.minusButton addTarget:self action:@selector(plusMinusPressed:) forControlEvents:UIControlEventTouchUpInside];
           return self.numberOfBedsCell;
           break;
-        case 5:
+        case 7:
           if (self.searchButtonCell == nil) {
             self.searchButtonCell = [self.searchButtonCell initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"SearchButtonCell"];
           }
@@ -238,9 +296,16 @@ const NSInteger kMinBedsCount = 1;
     } else {
       return 0;
     }
+  } else if (indexPath.section == 0 && indexPath.row == 5) {
+    if (self.showLocation) {
+      return 140;
+    } else {
+      return 0;
+    }
   } else {
     return self.tableView.rowHeight;
   }
+  return [super tableView:tableView heightForRowAtIndexPath:indexPath];
 }
 
 
@@ -249,30 +314,43 @@ const NSInteger kMinBedsCount = 1;
   [tableView deselectRowAtIndexPath:indexPath animated:true];
   if (indexPath.section == 0) {
     [self setDates];
+    [self setLocation];
     if (indexPath.row == 0) {
       if (self.showToDate) {
         [self toggleToDatePickerOrSetWith:nil];
+      } else if (self.showLocation) {
+        [self toggleToLocationPickerOrSetWith:nil];
       }
       [self toggleFromDatePicker:nil];
     } else if (indexPath.row == 2) {
       if (self.showFromDate) {
         [self toggleFromDatePicker:nil];
+      } else if (self.showLocation) {
+        [self toggleToLocationPickerOrSetWith:nil];
       }
       [self toggleToDatePickerOrSetWith:nil];
-    } else if (indexPath.row == 4 || indexPath.row == 5) {
+    } else if (indexPath.row == 4 || indexPath.row == 5 || indexPath.row == 6 || indexPath.row == 7) {
       [self toggleFromDatePicker:true];
       [self toggleToDatePickerOrSetWith:true];
-      if (indexPath.row == 5) {
+      if (indexPath.row == 4) {
+        self.showLocation = !self.showLocation;
+        [self.tableView reloadData];
+      }
+      if (indexPath.row == 7) {
         if ([DateValidationService validateFromDateIsTodayOrLater:self.fromDatePicker.date]) {
           if ([DateValidationService validateFromDate:self.fromDatePicker.date AndToDate:self.toDatePicker.date]) {
             AvailabilityTableViewController *availabilityVC = [[AvailabilityTableViewController alloc]init];
             availabilityVC.fromDate = self.fromDatePicker.date;
             availabilityVC.toDate = self.toDatePicker.date;
             availabilityVC.bedCount = self.bedCount;
+            NSInteger currentRow = [self.locationPicker selectedRowInComponent:0];
+            if (currentRow != 0) {
+              availabilityVC.location = self.locations[currentRow - 1];
+            }
             [self.navigationController pushViewController:availabilityVC animated:true];
           } else {
-            self.toCell.dateLabel.text = @"To Date must be after From Date";
-            self.toCell.dateLabel.textColor = [UIColor redColor];
+            self.toCell.detailLabel.text = @"To Date must be after From Date";
+            self.toCell.detailLabel.textColor = [UIColor redColor];
           }
         }
       }
@@ -296,6 +374,24 @@ const NSInteger kMinBedsCount = 1;
   } else {
     return @"";
   }
+}
+
+//MARK:
+//MARK: UIPickerViewDataSource
+
+-(NSInteger)pickerView:(UIPickerView *)pickerView numberOfRowsInComponent:(NSInteger)component {
+  return self.locations.count + 1;
+}
+
+-(NSInteger)numberOfComponentsInPickerView:(UIPickerView *)pickerView {
+  return 1;
+}
+
+-(NSString *)pickerView:(UIPickerView *)pickerView titleForRow:(NSInteger)row forComponent:(NSInteger)component {
+  if (row == 0) {
+    return @"--Choose a Location--";
+  }
+  return self.locations[row - 1];
 }
 
 -(void)setupConstraints {
@@ -322,7 +418,18 @@ const NSInteger kMinBedsCount = 1;
   
   NSLayoutConstraint *toDatePickerWidthLayoutContraint = [NSLayoutConstraint constraintWithItem:self.toDatePicker attribute:NSLayoutAttributeWidth relatedBy:NSLayoutRelationEqual toItem:self.toDateCell attribute:NSLayoutAttributeWidth multiplier:1 constant:0];
   [self.toDateCell addConstraint:toDatePickerWidthLayoutContraint];
+  
+  NSLayoutConstraint *locationPickerYLayoutContraint = [NSLayoutConstraint constraintWithItem:self.locationPicker attribute:NSLayoutAttributeCenterY relatedBy:NSLayoutRelationEqual toItem:self.locationPickerCell attribute:NSLayoutAttributeCenterY multiplier:1 constant:0];
+  [self.locationPickerCell addConstraint:locationPickerYLayoutContraint];
+  
+  NSLayoutConstraint *locationPickerXLayoutContraint = [NSLayoutConstraint constraintWithItem:self.locationPicker attribute:NSLayoutAttributeCenterX relatedBy:NSLayoutRelationEqual toItem:self.locationPickerCell attribute:NSLayoutAttributeCenterX multiplier:1 constant:0];
+  [self.locationPickerCell addConstraint:locationPickerXLayoutContraint];
+  
+  NSLayoutConstraint *locationPickerHeightLayoutContraint = [NSLayoutConstraint constraintWithItem:self.locationPicker attribute:NSLayoutAttributeHeight relatedBy:NSLayoutRelationEqual toItem:self.locationPickerCell attribute:NSLayoutAttributeHeight multiplier:1 constant:0];
+  [self.locationPickerCell addConstraint:locationPickerHeightLayoutContraint];
+  
+  NSLayoutConstraint *locationPickerWidthLayoutContraint = [NSLayoutConstraint constraintWithItem:self.locationPicker attribute:NSLayoutAttributeWidth relatedBy:NSLayoutRelationEqual toItem:self.locationPickerCell attribute:NSLayoutAttributeWidth multiplier:1 constant:0];
+  [self.locationPickerCell addConstraint:locationPickerWidthLayoutContraint];
 }
-
 
 @end

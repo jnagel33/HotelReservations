@@ -11,10 +11,11 @@
 #import "AppDelegate.h"
 #import "Hotel.h"
 #import "RoomsListViewController.h"
-#import "HotelTableViewCell.h"
+#import "MainDetailImageTableViewCell.h"
 #import "HotelHeaderView.h"
 #import "HotelService.h"
 #import "HotelReservationsStyleKit.h"
+#import "ImageResizer.h"
 
 @interface HotelListViewController () <UITableViewDataSource, UITableViewDelegate>
 
@@ -39,12 +40,12 @@
   [super viewDidLoad];
   UILabel *titleLabel = [[UILabel alloc]initWithFrame:CGRectMake(0, 0, 50, 20)];
   titleLabel.textColor = [HotelReservationsStyleKit blueDark];
-  titleLabel.font = [UIFont fontWithName:@"AvenirNext-DemiBold" size:22];
+  titleLabel.font = [UIFont fontWithName:@"AvenirNext-DemiBold" size:18];
   titleLabel.text = @"Hotels";
   self.navigationItem.titleView = titleLabel;
   
   self.tableView.delegate = self;
-  [self.tableView registerClass:[HotelTableViewCell class]forCellReuseIdentifier:@"HotelCell"];
+  [self.tableView registerClass:[MainDetailImageTableViewCell class]forCellReuseIdentifier:@"HotelCell"];
   
   AppDelegate *appDelegate = [UIApplication sharedApplication].delegate;
   NSArray *allHotels = [appDelegate.hotelService fetchAllHotels];
@@ -58,7 +59,7 @@
   for (int i = 0; i < hotels.count; i++) {
     Hotel *hotel = hotels[i];
     if (checkedHotels.count == 0) {
-      NSArray *firstHotelSection = [[NSArray alloc]initWithObjects:hotel, nil];
+      NSMutableArray *firstHotelSection = [[NSMutableArray alloc]initWithObjects:hotel, nil];
       [sections addObject:firstHotelSection];
     } else {
       Hotel *lastCheckedHotel = checkedHotels.lastObject;
@@ -85,13 +86,17 @@
 }
 
 -(UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-  HotelTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"HotelCell" forIndexPath:indexPath];
-  cell = [cell initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"HotelCell"];
+  MainDetailImageTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"HotelCell" forIndexPath:indexPath];
   NSArray *starSection = self.hotels[indexPath.section];
   Hotel *hotel = starSection[indexPath.row];
-  cell.nameLabel.text = [NSString stringWithFormat:@"%@",hotel.name];
-  cell.locationLabel.text = hotel.location;
-  cell.roomCountLabel.text = [NSString stringWithFormat:@"%lu available", (unsigned long)hotel.rooms.count];
+  cell.mainImageView.image = nil;
+  cell.mainLabel.text = [NSString stringWithFormat:@"%@",hotel.name];
+  cell.detailLabel.text = hotel.location;
+  if (hotel.actualImage == nil) {
+    UIImage *hotelImage = [UIImage imageWithData:hotel.image];
+    hotel.actualImage = hotelImage;
+  }
+  cell.mainImageView.image = hotel.actualImage;
   return cell;
 }
 
@@ -136,6 +141,10 @@
     [stars addObject:@"☆"];
   }
   return [stars componentsJoinedByString:@""];
+}
+
+-(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
+  return 100;
 }
 
 //MARK: Constraints
