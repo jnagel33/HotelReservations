@@ -11,6 +11,7 @@
 #import "Room.h"
 #import "RoomTableViewCell.h"
 #import "HotelReservationsStyleKit.h"
+#import "GlobalConstants.h"
 
 @interface RoomsListViewController () <UITableViewDataSource>
 
@@ -34,9 +35,9 @@
 
 - (void)viewDidLoad {
   [super viewDidLoad];
-  UILabel *titleLabel = [[UILabel alloc]initWithFrame:CGRectMake(0, 0, 50, 20)];
+  UILabel *titleLabel = [[UILabel alloc]initWithFrame:CGRectMake(0, 0, kTitleLabelWidth, kTitleLabelHeight)];
   titleLabel.textColor = [HotelReservationsStyleKit blueDark];
-  titleLabel.font = [UIFont fontWithName:@"AvenirNext-DemiBold" size:18];
+  titleLabel.font = [UIFont fontWithName:kFontName size:kTitleFontSize];
   titleLabel.text = @"Main Menu";
   [self.tableView registerClass:[RoomTableViewCell class] forCellReuseIdentifier:@"RoomCell"];
   self.tableView.dataSource = self;

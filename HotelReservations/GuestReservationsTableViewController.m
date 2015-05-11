@@ -16,6 +16,7 @@
 #import "MainDetailImageTableViewCell.h"
 #import "Room.h"
 #import "NoResultsTableViewCell.h"
+#import "GlobalConstants.h"
 
 const int kCurrentReservationSectionIndex = 0;
 const int kPastReservationsSectionIndex = 1;
@@ -31,9 +32,9 @@ const int kPastReservationsSectionIndex = 1;
 
 - (void)viewDidLoad {
   [super viewDidLoad];
-  UILabel *titleLabel = [[UILabel alloc]initWithFrame:CGRectMake(0, 0, 50, 20)];
+  UILabel *titleLabel = [[UILabel alloc]initWithFrame:CGRectMake(0, 0, kTitleLabelWidth, kTitleLabelHeight)];
   titleLabel.textColor = [HotelReservationsStyleKit blueDark];
-  titleLabel.font = [UIFont fontWithName:@"AvenirNext-DemiBold" size:18];
+  titleLabel.font = [UIFont fontWithName:kFontName size:kTitleFontSize];
   titleLabel.text = [NSString stringWithFormat:@"%@, %@", self.selectedGuest.lastName, self.selectedGuest.firstName];
   self.navigationItem.titleView = titleLabel;
   
@@ -59,8 +60,8 @@ const int kPastReservationsSectionIndex = 1;
       [futureReservations addObject:reservation];
     }
   }
-  [reservations setObject:futureReservations atIndexedSubscript:0];
-  [reservations setObject:pastReservations atIndexedSubscript:1];
+  [reservations setObject:futureReservations atIndexedSubscript:kCurrentReservationSectionIndex];
+  [reservations setObject:pastReservations atIndexedSubscript:kPastReservationsSectionIndex];
   self.reservations  = reservations;
 }
 
@@ -110,7 +111,7 @@ const int kPastReservationsSectionIndex = 1;
 }
 
 -(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
-  return 100;
+  return kMainDetailImageTableViewCellHeight;
 }
 
 -(NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section {
@@ -122,8 +123,9 @@ const int kPastReservationsSectionIndex = 1;
 }
 
 -(UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section {
-  UIView *headerView = [[HotelHeaderView alloc]initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, 40)];
-  UILabel * headerLabel = [[UILabel alloc]initWithFrame:CGRectMake(8, 4, 100, 20)];
+  UIView *headerView = [[HotelHeaderView alloc]initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, kHeaderViewHeight)];
+  
+  UILabel * headerLabel = [[UILabel alloc]initWithFrame:CGRectMake(kHeaderViewLabelLeadingSpace, kHeaderViewLabelTopSpace, kHeaderViewLabelWidth, kHeaderViewLabelHeight)];
   [headerView addSubview:headerLabel];
   headerLabel.translatesAutoresizingMaskIntoConstraints = false;
   
@@ -139,7 +141,7 @@ const int kPastReservationsSectionIndex = 1;
 }
 
 -(UITableViewCellEditingStyle)tableView:(UITableView *)tableView editingStyleForRowAtIndexPath:(NSIndexPath *)indexPath {
-  if (indexPath.section == 0) {
+  if (indexPath.section == kCurrentReservationSectionIndex) {
     return UITableViewCellEditingStyleDelete;
   } else {
     return UITableViewCellEditingStyleNone;

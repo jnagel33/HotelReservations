@@ -8,6 +8,8 @@
 
 #import <UIKit/UIKit.h>
 
+static const CGFloat kMainDetailImageTableViewCellHeight = 100;
+
 @interface MainDetailImageTableViewCell : UITableViewCell
 
 @property(strong,nonatomic)UILabel *mainLabel;

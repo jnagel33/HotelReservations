@@ -45,6 +45,33 @@
   return YES;
 }
 
+-(void)application:(UIApplication *)application handleWatchKitExtensionRequest:(NSDictionary *)userInfo reply:(void (^)(NSDictionary *))reply {
+  UIApplication *app= [UIApplication sharedApplication];
+  __block UIBackgroundTaskIdentifier task = [app beginBackgroundTaskWithName:@"test" expirationHandler:^{
+    [[UIApplication sharedApplication]endBackgroundTask:task];
+    task = UIBackgroundTaskInvalid;
+  }];
+  
+  NSArray *reservations = [self.hotelService fetchTodaysReservations];
+  NSMutableArray *reservationArray = [[NSMutableArray alloc]init];
+  for (int i = 0; i < reservations.count;i++) {
+    Reservation *reservation = reservations[i];
+    Guest *guest = reservation.guests.allObjects[0];
+    NSString *fullNameStr = [NSString stringWithFormat:@"%@, %@", guest.lastName, guest.firstName];
+    Room *room = reservation.room;
+    NSNumber *roomNumber = [[NSNumber alloc]initWithInt:room.number];
+    NSDictionary *reservationInfo = @{@"room": roomNumber, @"guest": fullNameStr};
+    [reservationArray addObject:reservationInfo];
+  }
+  
+  reply(@{@"reservations":reservationArray});
+  
+  
+  [app endBackgroundTask:task];
+  task = UIBackgroundTaskInvalid;
+}
+
+
 - (void)applicationWillResignActive:(UIApplication *)application {
   // Sent when the application is about to move from active to inactive state. This can occur for certain types of temporary interruptions (such as an incoming phone call or SMS message) or when the user quits the application and it begins the transition to the background state.
   // Use this method to pause ongoing tasks, disable timers, and throttle down OpenGL ES frame rates. Games should use this method to pause the game.

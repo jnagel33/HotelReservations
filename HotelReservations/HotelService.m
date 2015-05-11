@@ -100,4 +100,32 @@
   }
 }
 
+
+-(NSArray *)fetchTodaysReservations {
+  NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:@"Reservation"];
+  NSSortDescriptor *startDateSortDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"startDate" ascending:true];
+  fetchRequest.sortDescriptors = @[startDateSortDescriptor];
+  NSCalendar *calendar = [NSCalendar currentCalendar];
+  NSDate *date = [NSDate date];
+  NSDate *startOfDay = [calendar startOfDayForDate:date];
+  NSDateComponents *components = [calendar components:(  NSCalendarUnitMonth | NSCalendarUnitYear | NSCalendarUnitHour | NSCalendarUnitMinute | NSCalendarUnitSecond ) fromDate:date];
+  
+  [components setHour:23];
+  [components setMinute:59];
+  [components setSecond:59];
+  
+  NSDate *endOfDay = [calendar dateFromComponents:components];
+  
+  NSPredicate *firstPredicate = [NSPredicate predicateWithFormat:@"startDate <= %@", endOfDay];
+  NSPredicate *secondPredicate = [NSPredicate predicateWithFormat:@"startDate >= %@", startOfDay];
+  NSCompoundPredicate *compoundPredicate = [NSCompoundPredicate andPredicateWithSubpredicates:@[firstPredicate, secondPredicate]];
+  fetchRequest.predicate = compoundPredicate;
+  NSError *fetchError;
+  NSArray *reservations = [self.coreDataStack.managedObjectContext executeFetchRequest:fetchRequest error:&fetchError];
+  if (fetchError != nil) {
+    return nil;
+  }
+  return reservations;
+}
+
 @end

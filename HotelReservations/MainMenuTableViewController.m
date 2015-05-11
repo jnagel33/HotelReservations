@@ -20,9 +20,28 @@
 #import "HotelService.h"
 #import "AppDelegate.h"
 #import "HotelReservationsStyleKit.h"
+#import "GlobalConstants.h"
 
-const NSInteger kMaxBedsCount = 3;
-const NSInteger kMinBedsCount = 1;
+static const NSInteger kMaxBedsCount = 3;
+static const NSInteger kMinBedsCount = 1;
+static const double kAnimationDuration = 0.4;
+static const NSInteger kReservationSearchSection = 0;
+static const NSInteger kReservationsearchSectionRowNums = 8;
+static const NSInteger kSearchHotelsAndGuestsSection = 1;
+static const NSInteger kSearchHotelsAndGuestsSectionRowNums = 2;
+static const NSInteger kFromDateCellRow = 0;
+static const NSInteger kFromDateCellPickerRow = 1;
+static const NSInteger kToDateCellRow = 2;
+static const NSInteger kToDateCellPickerRow = 3;
+static const NSInteger kLocationCellRow = 4;
+static const NSInteger kLocationCellPickerRow = 5;
+static const NSInteger kNumberOfBedsCellRow = 6;
+static const NSInteger kSearchButtonCellRow = 7;
+static const NSInteger kSearchHotelsCellRow = 0;
+static const NSInteger kSearchGuestsCellRow = 1;
+static const CGFloat kDatePickerHeight = 219;
+static const CGFloat kLocationPickerHeight = 140;
+static const NSInteger kNumberOfSections = 2;
 
 @interface MainMenuTableViewController () <UIPickerViewDataSource, UIPickerViewDelegate>
 
@@ -83,9 +102,9 @@ const NSInteger kMinBedsCount = 1;
 
 - (void)viewDidLoad {
   [super viewDidLoad];
-  UILabel *titleLabel = [[UILabel alloc]initWithFrame:CGRectMake(0, 0, 50, 20)];
+  UILabel *titleLabel = [[UILabel alloc]initWithFrame:CGRectMake(0, 0, kTitleLabelWidth, kTitleLabelHeight)];
   titleLabel.textColor = [HotelReservationsStyleKit blueDark];
-  titleLabel.font = [UIFont fontWithName:@"AvenirNext-DemiBold" size:18];
+  titleLabel.font = [UIFont fontWithName:kFontName size:kTitleFontSize];
   titleLabel.text = @"Main Menu";
   
   self.navigationItem.titleView = titleLabel;
@@ -104,7 +123,7 @@ const NSInteger kMinBedsCount = 1;
   self.showFromDate = false;
   self.showToDate = false;
   self.showLocation = false;
-  self.bedCount = 1;
+  self.bedCount = kMinBedsCount;
   
   [self refreshLocations];
   self.fromCell.detailLabel.text = @"--Choose a Date";
@@ -141,7 +160,7 @@ const NSInteger kMinBedsCount = 1;
     self.showFromDate = !self.showFromDate;
   }
   self.fromDatePicker.alpha = 0;
-  [UIView animateWithDuration:0.4 animations:^{
+  [UIView animateWithDuration:kAnimationDuration animations:^{
     self.fromDatePicker.alpha = 1;
     [self.tableView reloadData];
   }];
@@ -154,7 +173,7 @@ const NSInteger kMinBedsCount = 1;
     self.showToDate = !self.showToDate;
   }
   self.toDatePicker.alpha = 0;
-  [UIView animateWithDuration:0.4 animations:^{
+  [UIView animateWithDuration:kAnimationDuration animations:^{
     self.toDatePicker.alpha = 1;
     [self.tableView reloadData];
   }];
@@ -210,18 +229,18 @@ const NSInteger kMinBedsCount = 1;
 //MARK: UITableViewDataSource
 
 -(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-  if (section == 0) {
-    return 8;
+  if (section == kReservationSearchSection) {
+    return kReservationsearchSectionRowNums;
   } else {
-    return 2;
+    return kSearchHotelsAndGuestsSectionRowNums;
   }
 }
 
 -(UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
   switch (indexPath.section) {
-    case 0:
+    case kReservationSearchSection:
       switch (indexPath.row) {
-        case 0:
+        case kFromDateCellRow:
           if (self.fromCell == nil) {
             self.fromCell = [tableView dequeueReusableCellWithIdentifier:@"DatePickerHeaderViewCell" forIndexPath:indexPath];
             self.fromCell.detailLabel.text = @"--Choose a Date--";
@@ -229,10 +248,10 @@ const NSInteger kMinBedsCount = 1;
           self.fromCell.infoLabel.text = @"From:";
           return self.fromCell;
           break;
-        case 1:
+        case kFromDateCellPickerRow:
           return self.fromDateCell;
           break;
-        case 2:
+        case kToDateCellRow:
           if (self.toCell == nil) {
             self.toCell = [tableView dequeueReusableCellWithIdentifier:@"DatePickerHeaderViewCell" forIndexPath:indexPath];
             self.toCell.detailLabel.text = @"--Choose a Date--";
@@ -240,10 +259,10 @@ const NSInteger kMinBedsCount = 1;
           self.toCell.infoLabel.text = @"To:";
           return self.toCell;
           break;
-        case 3:
+        case kToDateCellPickerRow:
           return self.toDateCell;
           break;
-        case 4:
+        case kLocationCellRow:
           if (self.locationCell == nil) {
             self.locationCell = [tableView dequeueReusableCellWithIdentifier:@"LocationPickerHeaderViewCell" forIndexPath:indexPath];
             self.locationCell.detailLabel.text = @"--Choose a Location--";
@@ -251,10 +270,10 @@ const NSInteger kMinBedsCount = 1;
           self.locationCell.infoLabel.text = @"Location:";
           return self.locationCell;
           break;
-        case 5:
+        case kLocationCellPickerRow:
           return self.locationPickerCell;
           break;
-        case 6:
+        case kNumberOfBedsCellRow:
           if (self.numberOfBedsCell == nil) {
             self.numberOfBedsCell = [self.numberOfBedsCell initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"NumberBedsCell"];
           }
@@ -262,7 +281,7 @@ const NSInteger kMinBedsCount = 1;
           [self.numberOfBedsCell.minusButton addTarget:self action:@selector(plusMinusPressed:) forControlEvents:UIControlEventTouchUpInside];
           return self.numberOfBedsCell;
           break;
-        case 7:
+        case kSearchButtonCellRow:
           if (self.searchButtonCell == nil) {
             self.searchButtonCell = [self.searchButtonCell initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"SearchButtonCell"];
           }
@@ -273,12 +292,12 @@ const NSInteger kMinBedsCount = 1;
           break;
       }
       break;
-    case 1:
+    case kSearchHotelsAndGuestsSection:
       switch (indexPath.row) {
-        case 0:
+        case kSearchHotelsCellRow:
           return self.searchHotelsCell;
           break;
-        case 1:
+        case kSearchGuestsCellRow:
           return self.searchCustomersCell;
           break;
         default:
@@ -295,25 +314,25 @@ const NSInteger kMinBedsCount = 1;
 //MARK: UITableViewDelegate
 
 -(NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
-  return 2;
+  return kNumberOfSections;
 }
 
 -(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
-  if (indexPath.section == 0 && indexPath.row == 1) {
+  if (indexPath.section == kReservationSearchSection && indexPath.row == kFromDateCellPickerRow) {
     if (self.showFromDate) {
-      return 219;
+      return kDatePickerHeight;
     } else {
       return 0;
     }
-  } else if (indexPath.section == 0 && indexPath.row == 3) {
+  } else if (indexPath.section == kReservationSearchSection && indexPath.row == kToDateCellPickerRow) {
     if (self.showToDate) {
-      return 219;
+      return kDatePickerHeight;
     } else {
       return 0;
     }
-  } else if (indexPath.section == 0 && indexPath.row == 5) {
+  } else if (indexPath.section == kReservationSearchSection && indexPath.row == kLocationCellPickerRow) {
     if (self.showLocation) {
-      return 140;
+      return kLocationPickerHeight;
     } else {
       return 0;
     }
@@ -323,35 +342,33 @@ const NSInteger kMinBedsCount = 1;
   return [super tableView:tableView heightForRowAtIndexPath:indexPath];
 }
 
-
-
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
   [tableView deselectRowAtIndexPath:indexPath animated:true];
-  if (indexPath.section == 0) {
+  if (indexPath.section == kReservationSearchSection) {
     [self setDates];
     [self setLocation];
-    if (indexPath.row == 0) {
+    if (indexPath.row == kFromDateCellRow) {
       if (self.showToDate) {
         [self toggleToDatePickerOrSetWith:nil];
       } else if (self.showLocation) {
         [self toggleToLocationPickerOrSetWith:nil];
       }
       [self toggleFromDatePicker:nil];
-    } else if (indexPath.row == 2) {
+    } else if (indexPath.row == kToDateCellRow) {
       if (self.showFromDate) {
         [self toggleFromDatePicker:nil];
       } else if (self.showLocation) {
         [self toggleToLocationPickerOrSetWith:nil];
       }
       [self toggleToDatePickerOrSetWith:nil];
-    } else if (indexPath.row == 4 || indexPath.row == 5 || indexPath.row == 6 || indexPath.row == 7) {
+    } else if (indexPath.row == kLocationCellRow || indexPath.row == kLocationCellPickerRow || indexPath.row == kNumberOfBedsCellRow || indexPath.row == kSearchButtonCellRow) {
       [self toggleFromDatePicker:true];
       [self toggleToDatePickerOrSetWith:true];
-      if (indexPath.row == 4) {
+      if (indexPath.row == kLocationCellRow) {
         self.showLocation = !self.showLocation;
         [self.tableView reloadData];
       }
-      if (indexPath.row == 7) {
+      if (indexPath.row == kSearchButtonCellRow) {
         if ([DateValidationService validateFromDateIsTodayOrLater:self.fromDatePicker.date]) {
           if ([DateValidationService validateFromDate:self.fromDatePicker.date AndToDate:self.toDatePicker.date]) {
             AvailabilityTableViewController *availabilityVC = [[AvailabilityTableViewController alloc]init];
@@ -370,11 +387,11 @@ const NSInteger kMinBedsCount = 1;
         }
       }
     }
-  } else if (indexPath.section == 1) {
-    if (indexPath.row == 0) {
+  } else if (indexPath.section == kSearchHotelsAndGuestsSection) {
+    if (indexPath.row == kSearchHotelsCellRow) {
       HotelListViewController *hotelListVC = [[HotelListViewController alloc]init];
       [self.navigationController pushViewController:hotelListVC animated:true];
-    } else if (indexPath.row == 1) {
+    } else if (indexPath.row == kSearchGuestsCellRow) {
       GuestTableViewController *guestListVC = [[GuestTableViewController alloc]init];
       [self.navigationController pushViewController:guestListVC animated:true];
     }
@@ -382,7 +399,7 @@ const NSInteger kMinBedsCount = 1;
 }
 
 -(NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section {
-  if (section == 0) {
+  if (section == kReservationSearchSection) {
     return @"Reservation";
   } else if (section == 1) {
     return @"Search";

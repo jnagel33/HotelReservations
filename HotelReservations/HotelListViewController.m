@@ -16,6 +16,7 @@
 #import "HotelService.h"
 #import "HotelReservationsStyleKit.h"
 #import "ImageResizer.h"
+#import "GlobalConstants.h"
 
 @interface HotelListViewController () <UITableViewDataSource, UITableViewDelegate>
 
@@ -38,9 +39,9 @@
 
 - (void)viewDidLoad {
   [super viewDidLoad];
-  UILabel *titleLabel = [[UILabel alloc]initWithFrame:CGRectMake(0, 0, 50, 20)];
+  UILabel *titleLabel = [[UILabel alloc]initWithFrame:CGRectMake(0, 0, kTitleLabelWidth, kTitleLabelHeight)];
   titleLabel.textColor = [HotelReservationsStyleKit blueDark];
-  titleLabel.font = [UIFont fontWithName:@"AvenirNext-DemiBold" size:18];
+  titleLabel.font = [UIFont fontWithName:kFontName size:kTitleFontSize];
   titleLabel.text = @"Hotels";
   self.navigationItem.titleView = titleLabel;
   
@@ -132,8 +133,8 @@
 }
 
 -(UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section {
-  UIView *headerView = [[HotelHeaderView alloc]initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, 40)];
-  UILabel * headerLabel = [[UILabel alloc]initWithFrame:CGRectMake(8, 4, 100, 20)];
+  UIView *headerView = [[HotelHeaderView alloc]initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, kHeaderViewHeight)];
+  UILabel * headerLabel = [[UILabel alloc]initWithFrame:CGRectMake(kHeaderViewLabelLeadingSpace, kHeaderViewLabelTopSpace, kHeaderViewLabelWidth, kHeaderViewLabelHeight)];
   [headerView addSubview:headerLabel];
   headerLabel.translatesAutoresizingMaskIntoConstraints = false;
   
@@ -159,7 +160,7 @@
 }
 
 -(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
-  return 100;
+  return kMainDetailImageTableViewCellHeight;
 }
 
 //MARK: Constraints

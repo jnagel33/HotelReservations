@@ -9,6 +9,9 @@
 #import "ButtonTableViewCell.h"
 #import "HotelReservationsStyleKit.h"
 
+static const CGFloat kMaxScreenWidth = 600;
+static const CGFloat kButtonHeight = 30;
+
 @implementation ButtonTableViewCell
 
 -(instancetype)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier {
@@ -19,7 +22,7 @@
     self.searchLabel.text = @"Search";
     self.searchLabel.textColor = [UIColor whiteColor];
     [self.contentView addSubview:self.searchLabel];
-    self.backgroundImage = [[UIImageView alloc]initWithImage:[HotelReservationsStyleKit imageOfSectionHeaderWithFrame:CGRectMake(0, 0, 600, 30)]];
+    self.backgroundImage = [[UIImageView alloc]initWithImage:[HotelReservationsStyleKit imageOfSectionHeaderWithFrame:CGRectMake(0, 0, kMaxScreenWidth, kButtonHeight)]];
     self.backgroundImage.translatesAutoresizingMaskIntoConstraints = false;
     [self.contentView addSubview:self.backgroundImage];
     NSDictionary *views = @{@"searchLabel": self.searchLabel, @"backgroundImage": self.backgroundImage};

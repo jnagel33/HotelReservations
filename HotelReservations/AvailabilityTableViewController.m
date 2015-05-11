@@ -20,6 +20,9 @@
 #import "MainDetailImageTableViewCell.h"
 #import "ImageResizer.h"
 #import "NoResultsTableViewCell.h"
+#import "GlobalConstants.h"
+
+static const CGFloat kTableViewHeaderHeight = 60;
 
 @interface AvailabilityTableViewController () <NSFetchedResultsControllerDelegate>
 
@@ -30,14 +33,13 @@
 @property(strong,nonatomic)UILabel *locationLabel;
 @property(strong,nonatomic)UILabel *bedsLabel;
 
-
 @end
 
 @implementation AvailabilityTableViewController
 
 -(void)loadView {
   [super loadView];
-  self.tableViewHeaderView = [[SearchTableViewHeaderView alloc]initWithFrame:CGRectMake(0, 0, self.tableView.frame.size.width, 60)];
+  self.tableViewHeaderView = [[SearchTableViewHeaderView alloc]initWithFrame:CGRectMake(0, 0, self.tableView.frame.size.width, kTableViewHeaderHeight)];
   self.dateRangeLabel = [[UILabel alloc]init];
   self.dateRangeLabel.textColor = [UIColor whiteColor];
   self.dateRangeLabel.translatesAutoresizingMaskIntoConstraints = false;
@@ -58,9 +60,9 @@
 
 - (void)viewDidLoad {
   [super viewDidLoad];
-  UILabel *titleLabel = [[UILabel alloc]initWithFrame:CGRectMake(0, 0, 50, 20)];
+  UILabel *titleLabel = [[UILabel alloc]initWithFrame:CGRectMake(0, 0, kTitleLabelWidth, kTitleLabelHeight)];
   titleLabel.textColor = [HotelReservationsStyleKit blueDark];
-  titleLabel.font = [UIFont fontWithName:@"AvenirNext-DemiBold" size:18];
+  titleLabel.font = [UIFont fontWithName:kFontName size:kTitleFontSize];
   titleLabel.text = @"Search Results";
   self.navigationItem.titleView = titleLabel;
   
@@ -183,8 +185,8 @@
 }
 
 -(UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section {
-  UIView *headerView = [[HotelHeaderView alloc]initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, 40)];
-  UILabel * headerLabel = [[UILabel alloc]initWithFrame:CGRectMake(8, 4, 100, 20)];
+  UIView *headerView = [[HotelHeaderView alloc]initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, kHeaderViewHeight)];
+  UILabel * headerLabel = [[UILabel alloc]initWithFrame:CGRectMake(kHeaderViewLabelLeadingSpace, kHeaderViewLabelTopSpace, kHeaderViewLabelWidth, kHeaderViewLabelHeight)];
   [headerView addSubview:headerLabel];
   headerLabel.translatesAutoresizingMaskIntoConstraints = false;
   
@@ -221,7 +223,7 @@
 }
 
 -(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
-  return 100;
+  return kMainDetailImageTableViewCellHeight;
 }
 
 //MARK: Constraints

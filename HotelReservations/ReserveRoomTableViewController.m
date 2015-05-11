@@ -19,6 +19,21 @@
 #import "GuestReservationsTableViewController.h"
 #import "PickerHeaderViewCell.h"
 #import "HotelService.h"
+#import "GlobalConstants.h"
+
+static const NSInteger kDetailsSection = 0;
+static const NSInteger kDateSection = 1;
+static const NSInteger kNameSection = 2;
+static const NSInteger kGuestsSection = 3;
+static const CGFloat kGuestSectionHeaderHeight = 30;
+static const CGFloat kNormalSectionHeaderHeight = 15;
+static const CGFloat kGuestPickerCellHeight = 209;
+static const NSInteger kDetailSectionRowNums = 3;
+static const NSInteger kDateSectionRowNums = 2;
+static const NSInteger kNameSectionRowNums = 2;
+static const NSInteger kGuestSectionRowNums = 2;
+static const NSInteger kReserveButtonSectionRowNums = 1;
+static const CGFloat kTableViewOffsetBuffer = 100;
 
 @interface ReserveRoomTableViewController () <UITextFieldDelegate, UIPickerViewDataSource, UIPickerViewDelegate>
 
@@ -42,9 +57,9 @@
 @implementation ReserveRoomTableViewController
 
 -(void)loadView {
-  UILabel *titleLabel = [[UILabel alloc]initWithFrame:CGRectMake(0, 0, 50, 20)];
+  UILabel *titleLabel = [[UILabel alloc]initWithFrame:CGRectMake(0, 0, kTitleLabelWidth, kTitleLabelHeight)];
   titleLabel.textColor = [HotelReservationsStyleKit blueDark];
-  titleLabel.font = [UIFont fontWithName:@"AvenirNext-DemiBold" size:18];
+  titleLabel.font = [UIFont fontWithName:kFontName size:kTitleFontSize];
   titleLabel.text = @"Make a Reservation";
   self.navigationItem.titleView = titleLabel;
   
@@ -137,16 +152,16 @@
 }
 
 -(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-  if (section == 0) {
-    return 3;
-  } else if (section == 1) {
-    return 2;
-  } else if (section == 2) {
-    return 2;
-  }  else if (section == 3) {
-    return 2;
+  if (section == kDetailsSection) {
+    return kDetailSectionRowNums;
+  } else if (section == kDateSection) {
+    return kDateSectionRowNums;
+  } else if (section == kNameSection) {
+    return kNameSectionRowNums;
+  }  else if (section == kGuestsSection) {
+    return kGuestSectionRowNums;
   } else {
-    return 1;
+    return kReserveButtonSectionRowNums;
   }
 }
 
@@ -182,7 +197,7 @@
         return [[UITableViewCell alloc]init];
         break;
     }
-  } else if (indexPath.section == 1) {
+  } else if (indexPath.section == kDateSection) {
     NSDateFormatter *dateFormatter = [[NSDateFormatter alloc]init];
     dateFormatter.dateFormat = @"EEEE, MMMM dd";
     switch (indexPath.row) {
@@ -206,7 +221,7 @@
         return [[UITableViewCell alloc]init];
         break;
     }
-  } else if (indexPath.section == 2) {
+  } else if (indexPath.section == kNameSection) {
     if (indexPath.row == 0) {
       if (self.firstNameCell == nil) {
         self.firstNameCell = [self.firstNameCell initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"GuestNameCell"];
@@ -222,7 +237,7 @@
       self.lastNameCell.nameTextField.placeholder = @"Enter your last name";
       return self.lastNameCell;
     }
-  } else if (indexPath.section == 3) {
+  } else if (indexPath.section == kGuestsSection) {
     if (indexPath.row == 0) {
       if (self.guestCell == nil) {
         self.guestCell = [tableView dequeueReusableCellWithIdentifier:@"UserPickerCell" forIndexPath:indexPath];
@@ -247,15 +262,15 @@
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
   [self.tableView deselectRowAtIndexPath:indexPath animated:true];
   [self setUser];
-  if (indexPath.section == 2) {
+  if (indexPath.section == kNameSection) {
     if (indexPath.row == 0) {
       [self.firstNameCell.nameTextField becomeFirstResponder];
     } else {
       [self.lastNameCell.nameTextField becomeFirstResponder];
     }
-  } else if (indexPath.section == 3 && indexPath.row == 0) {
+  } else if (indexPath.section == kGuestsSection && indexPath.row == 0) {
     self.showUsers = !self.showUsers;
-    [self.tableView setContentOffset:CGPointMake(self.tableView.contentOffset.x, self.tableView.contentOffset.y + 100)];
+    [self.tableView setContentOffset:CGPointMake(self.tableView.contentOffset.x, self.tableView.contentOffset.y + kTableViewOffsetBuffer)];
     [UIView animateWithDuration:0.5 animations:^{
       [self.view layoutIfNeeded];
     }];
@@ -284,9 +299,9 @@
 }
 
 -(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
-  if (indexPath.section == 3 && indexPath.row == 1) {
+  if (indexPath.section == kGuestsSection && indexPath.row == 1) {
     if (self.showUsers) {
-      return 209;
+      return kGuestPickerCellHeight;
     } else {
       return 0;
     }
@@ -295,7 +310,7 @@
 }
 
 -(UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section {
-  if (section == 3) {
+  if (section == kGuestsSection) {
     UIView *headerView = [[UIView alloc]initWithFrame:CGRectMake(0, 0, self.tableView.frame.size.width, [self tableView:tableView heightForHeaderInSection:section])];
     headerView.backgroundColor = [UIColor clearColor];
     UILabel *sectionLabel = [[UILabel alloc]init];
@@ -314,10 +329,10 @@
 }
 
 -(CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section {
-  if (section == 3) {
-    return 30;
+  if (section == kGuestsSection) {
+    return kGuestSectionHeaderHeight;
   }
-  return 15;
+  return kNormalSectionHeaderHeight;
 }
 
 //MARK UITextFieldDelegate

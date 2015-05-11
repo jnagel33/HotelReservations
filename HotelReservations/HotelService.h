@@ -27,5 +27,7 @@
 
 -(NSArray *)fetchAllGuests;
 
+-(NSArray *)fetchTodaysReservations;
+
 -(void)deleteReservation:(Reservation *)reservation;
 @end

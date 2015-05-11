@@ -17,9 +17,14 @@
 @implementation InterfaceController
 
 - (void)awakeWithContext:(id)context {
-    [super awakeWithContext:context];
-
-    // Configure interface objects here.
+  [super awakeWithContext:context];
+  
+  [InterfaceController openParentApplication:@{@"request":@"reservation"} reply:^(NSDictionary *replyInfo, NSError *error) {
+    NSArray *reservations = replyInfo[@"reservations"];
+    for (NSDictionary *reservationInfo in reservations) {
+      NSLog(@"%@", reservationInfo[@"hotel"]);
+    }
+  }];
 }
 
 - (void)willActivate {

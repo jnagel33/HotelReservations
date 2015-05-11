@@ -13,6 +13,7 @@
 #import "Guest.h"
 #import <UIKit/UIKit.h>
 #import "RandomConfirmationIDGenerator.h"
+#import "HotelJSONParserService.h"
 
 @interface CoreDataStack()
 
@@ -104,9 +105,9 @@
     storeType = NSSQLiteStoreType;
   }
   
-  NSDictionary *options = @{NSMigratePersistentStoresAutomaticallyOption : @true, NSInferMappingModelAutomaticallyOption : @true,NSPersistentStoreUbiquitousContentNameKey : @"ReservationViCloud", NSPersistentStoreUbiquitousContentURLKey : [self cloudDirectory]};
+//  NSDictionary *options = @{NSMigratePersistentStoresAutomaticallyOption : @true, NSInferMappingModelAutomaticallyOption : @true,NSPersistentStoreUbiquitousContentNameKey : @"ReservationViCloud", NSPersistentStoreUbiquitousContentURLKey : [self cloudDirectory]};
   
-  if (![_persistentStoreCoordinator addPersistentStoreWithType:storeType configuration:nil URL:storeURL options:options error:&error]) {
+  if (![_persistentStoreCoordinator addPersistentStoreWithType:storeType configuration:nil URL:storeURL options:nil error:&error]) {
     // Report any error we got.
     NSMutableDictionary *dict = [NSMutableDictionary dictionary];
     dict[NSLocalizedDescriptionKey] = @"Failed to initialize the application's saved data";
@@ -152,29 +153,30 @@
   NSArray *myHotels = [self.managedObjectContext executeFetchRequest:fetchRequest error:&fetchError];
   NSLog(@"%lu", (unsigned long)myHotels.count);
   if (myHotels.count == 0) {
-    NSString *filePath = [[NSBundle mainBundle]pathForResource:@"seed" ofType:@"json"];
-    NSData *data = [NSData dataWithContentsOfFile:filePath];
-    NSError *error;
-    NSDictionary *jsonObject = [NSJSONSerialization JSONObjectWithData:data options:0 error:&error];
-    NSArray *hotels = jsonObject[@"Hotels"];
-    for (NSDictionary *hotel in hotels) {
-      Hotel *newHotel = [NSEntityDescription insertNewObjectForEntityForName:@"Hotel" inManagedObjectContext:self.managedObjectContext];
-      newHotel.name = hotel[@"name"];
-      newHotel.location = hotel[@"location"];
-      NSNumber *starsNum = hotel[@"stars"];
-      newHotel.stars = starsNum.intValue;
-      NSArray *rooms = hotel[@"rooms"];
-      for (NSDictionary *room in rooms) {
-        Room *newRoom = [NSEntityDescription insertNewObjectForEntityForName:@"Room" inManagedObjectContext:self.managedObjectContext];
-        NSNumber *number = room[@"number"];
-        newRoom.number = number.intValue;
-        NSNumber *beds = room[@"beds"];
-        newRoom.beds = beds.intValue;
-        NSNumber *rate = room[@"rate"];
-        newRoom.rate = rate.intValue;
-        newRoom.hotel = newHotel;
-      }
-    }
+    [HotelJSONParserService parseJSONFromSeedFile:self];
+//    NSString *filePath = [[NSBundle mainBundle]pathForResource:@"seed" ofType:@"json"];
+//    NSData *data = [NSData dataWithContentsOfFile:filePath];
+//    NSError *error;
+//    NSDictionary *jsonObject = [NSJSONSerialization JSONObjectWithData:data options:0 error:&error];
+//    NSArray *hotels = jsonObject[@"Hotels"];
+//    for (NSDictionary *hotel in hotels) {
+//      Hotel *newHotel = [NSEntityDescription insertNewObjectForEntityForName:@"Hotel" inManagedObjectContext:self.managedObjectContext];
+//      newHotel.name = hotel[@"name"];
+//      newHotel.location = hotel[@"location"];
+//      NSNumber *starsNum = hotel[@"stars"];
+//      newHotel.stars = starsNum.intValue;
+//      NSArray *rooms = hotel[@"rooms"];
+//      for (NSDictionary *room in rooms) {
+//        Room *newRoom = [NSEntityDescription insertNewObjectForEntityForName:@"Room" inManagedObjectContext:self.managedObjectContext];
+//        NSNumber *number = room[@"number"];
+//        newRoom.number = number.intValue;
+//        NSNumber *beds = room[@"beds"];
+//        newRoom.beds = beds.intValue;
+//        NSNumber *rate = room[@"rate"];
+//        newRoom.rate = rate.intValue;
+//        newRoom.hotel = newHotel;
+//      }
+//    }
     NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:@"Hotel"];
     NSError *fetchError;
     myHotels = [self.managedObjectContext executeFetchRequest:fetchRequest error:&fetchError];

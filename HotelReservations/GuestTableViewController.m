@@ -12,6 +12,7 @@
 #import "Guest.h"
 #import "HotelReservationsStyleKit.h"
 #import "GuestReservationsTableViewController.h"
+#import "GlobalConstants.h"
 
 @interface GuestTableViewController ()
 
@@ -24,9 +25,9 @@
 - (void)viewDidLoad {
   [super viewDidLoad];
   
-  UILabel *titleLabel = [[UILabel alloc]initWithFrame:CGRectMake(0, 0, 50, 20)];
+  UILabel *titleLabel = [[UILabel alloc]initWithFrame:CGRectMake(0, 0, kTitleLabelWidth, kTitleLabelHeight)];
   titleLabel.textColor = [HotelReservationsStyleKit blueDark];
-  titleLabel.font = [UIFont fontWithName:@"AvenirNext-DemiBold" size:18];
+  titleLabel.font = [UIFont fontWithName:kFontName size:kTitleFontSize];
   titleLabel.text = @"Guests";
   self.navigationItem.titleView = titleLabel;
   

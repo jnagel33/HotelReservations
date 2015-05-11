@@ -125,6 +125,70 @@
   XCTAssert(fetchedResultsController.sections.count == 0, @"Failed fetch for available rooms with reservations with location");
 }
 
+-(void)testCreateReservation {
+  NSDate *today = [NSDate date];
+  NSCalendar *calendar = [NSCalendar currentCalendar];
+  NSDate *tomorrow = [calendar dateByAddingUnit:NSCalendarUnitDay value:1 toDate:today options:0];
+  Hotel *hotel = [self setupHotelWithName:@"test"];
+  Room *room = [self setupRoomWithNumber:1 Andrate:1 AndBeds:1 AndHotel:hotel];
+  Guest *guest = [self setUpGuestWithFirstName:@"test" AndLastName:@"test"];
+  [self.hotelService makeReservationForRoom:room withFromDate:today andToDate:tomorrow forGuest:guest];
+  
+  NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:@"Reservation"];
+  NSArray *reservations = [self.coreDataStack.managedObjectContext executeFetchRequest:fetchRequest error:nil];
+  XCTAssert(reservations.count == 1, @"Failed to create a reservation");
+}
+
+-(void)testDeleteReservation {
+  NSDate *today = [NSDate date];
+  NSCalendar *calendar = [NSCalendar currentCalendar];
+  NSDate *tomorrow = [calendar dateByAddingUnit:NSCalendarUnitDay value:1 toDate:today options:0];
+  Hotel *hotel = [self setupHotelWithName:@"test"];
+  Room *room = [self setupRoomWithNumber:1 Andrate:1 AndBeds:1 AndHotel:hotel];
+  Guest *guest = [self setUpGuestWithFirstName:@"test" AndLastName:@"test"];
+  Reservation *reservation = [self setupReservationWithFromDate:today AndToDate:tomorrow AndRoom:room AndReservation:guest];
+  
+  [self.hotelService deleteReservation:reservation];
+  NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:@"Reservation"];
+  NSArray *reservations = [self.coreDataStack.managedObjectContext executeFetchRequest:fetchRequest error:nil];
+  XCTAssert(reservations.count == 0, @"Failed to create remove reservation");
+}
+
+-(void)testFetchAllReservationsFromTodayZeroResults {
+  NSArray *todaysReservations = [self.hotelService fetchTodaysReservations];
+  XCTAssert(todaysReservations.count == 0, @"Failed when fetching today's reservation with zero results");
+}
+
+-(void)testFetchAllReservationsFromTodayWithResults {
+  NSDate *today = [NSDate date];
+  NSCalendar *calendar = [NSCalendar currentCalendar];
+  NSDate *tomorrow = [calendar dateByAddingUnit:NSCalendarUnitDay value:1 toDate:today options:0];
+  Hotel *hotel = [self setupHotelWithName:@"test"];
+  Room *room = [self setupRoomWithNumber:1 Andrate:1 AndBeds:1 AndHotel:hotel];
+  Guest *guest = [self setUpGuestWithFirstName:@"test" AndLastName:@"test"];
+  [self setupReservationWithFromDate:today AndToDate:tomorrow AndRoom:room AndReservation:guest];
+  NSArray *todaysReservations = [self.hotelService fetchTodaysReservations];
+  XCTAssert(todaysReservations.count == 1, @"Failed when fetching today's reservation with results");
+}
+
+-(void)testFetchAllGuestsZeroResults{
+  NSArray *guests = [self.hotelService fetchAllGuests];
+  XCTAssert(guests.count == 0, @"Failed when fetching all guests with no results");
+}
+
+-(void)testFetchAllGuestsWithResults{
+  NSDate *today = [NSDate date];
+  NSCalendar *calendar = [NSCalendar currentCalendar];
+  NSDate *tomorrow = [calendar dateByAddingUnit:NSCalendarUnitDay value:1 toDate:today options:0];
+  Hotel *hotel = [self setupHotelWithName:@"test"];
+  Room *room = [self setupRoomWithNumber:1 Andrate:1 AndBeds:1 AndHotel:hotel];
+  Guest *guest = [self setUpGuestWithFirstName:@"test" AndLastName:@"test"];
+  [self setupReservationWithFromDate:today AndToDate:tomorrow AndRoom:room AndReservation:guest];
+  
+  NSArray *guests = [self.hotelService fetchAllGuests];
+  XCTAssert(guests.count == 1, @"Failed when fetching all guests with no results");
+}
+
 - (void)testPerformanceExample {
     // This is an example of a performance test case.
     [self measureBlock:^{

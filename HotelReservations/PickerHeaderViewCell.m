@@ -20,7 +20,6 @@
     self.detailLabel = [[UILabel alloc]init];
     self.detailLabel.textColor = [HotelReservationsStyleKit blueDark];
     self.detailLabel.textAlignment = NSTextAlignmentCenter;
-//    self.detailLabel.text = @"--Choose a Date--";
     self.detailLabel.translatesAutoresizingMaskIntoConstraints = false;
     
     [self.contentView addSubview:self.detailLabel];
