@@ -93,8 +93,7 @@
   return sections;
 }
 
-//MARK:
-//MARK: UITableViewDataSource
+#pragma mark - UITableViewDataSource
 
 -(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
   NSArray *sectionHotels = self.hotels[section];
@@ -120,8 +119,7 @@
   return self.hotels.count;
 }
 
-//MARK:
-//MARK: UITableViewDelegate
+#pragma mark - UITableViewDelegate
 
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
   [tableView deselectRowAtIndexPath:indexPath animated:true];
@@ -163,7 +161,7 @@
   return kMainDetailImageTableViewCellHeight;
 }
 
-//MARK: Constraints
+#pragma mark - Constraints
 
 -(void)setConstraintsForRootView:(UIView *)view withView:(NSDictionary *)dictionary {
   NSArray *tableViewHorizontalConstraints = [NSLayoutConstraint constraintsWithVisualFormat:@"H:|[tableView]|" options:0 metrics:nil views:dictionary];

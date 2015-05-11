@@ -107,8 +107,7 @@ static const CGFloat kTableViewHeaderHeight = 60;
   [self.tableView reloadData];
 }
 
-//MARK:
-//MARK: NSFetchedResultsControllerDelegate
+#pragma mark - NSFetchedResultsControllerDelegate
 
 -(void)controller:(NSFetchedResultsController *)controller didChangeObject:(id)anObject atIndexPath:(NSIndexPath *)indexPath forChangeType:(NSFetchedResultsChangeType)type newIndexPath:(NSIndexPath *)newIndexPath {
   
@@ -139,8 +138,7 @@ static const CGFloat kTableViewHeaderHeight = 60;
   [self.tableView endUpdates];
 }
 
-//MARK:
-//MARK: UITableViewDataSource
+#pragma mark - UITableViewDataSource
 
 -(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
   if ([self.fetchedResultsController.sections count] == 0) {
@@ -207,12 +205,16 @@ static const CGFloat kTableViewHeaderHeight = 60;
     id<NSFetchedResultsSectionInfo> sectionInfo = [[self.fetchedResultsController sections]objectAtIndex:section];
     Room *room = [[sectionInfo objects]objectAtIndex:0];
     Hotel *hotel = room.hotel;
-    return hotel.name;
+    
+    NSMutableArray *stars = [[NSMutableArray alloc]init];
+    for (int i = 0; i < hotel.stars; i++) {
+      [stars addObject:@"☆"];
+    }
+    return [NSString stringWithFormat:@"%@ %@",hotel.name, [stars componentsJoinedByString:@""]];
   }
 }
 
-
-//MARK: UITableViewDelegate
+#pragma mark - UITableViewDelegate
 
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
   ReserveRoomTableViewController *reserveRoomVC = [[ReserveRoomTableViewController alloc]init];
@@ -226,7 +228,7 @@ static const CGFloat kTableViewHeaderHeight = 60;
   return kMainDetailImageTableViewCellHeight;
 }
 
-//MARK: Constraints
+#pragma mark - Constraints
 
 -(void)setConstraintsWithViews:(NSDictionary *)dictionary {
   NSArray *hTableViewHeaderSubviews = [NSLayoutConstraint constraintsWithVisualFormat:@"H:|-10-[dateRangeLabel][bedsLabel]-10-|" options:0 metrics:nil views:dictionary];

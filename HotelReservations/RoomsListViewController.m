@@ -50,8 +50,7 @@
   [view addConstraints:tableViewVerticalConstraints];
 }
 
-//MARK:
-//MARK: UITableViewDataSource
+#pragma mark - UITableViewDataSource
 
 -(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
   return self.rooms.count;

@@ -225,8 +225,7 @@ static const NSInteger kNumberOfSections = 2;
   }
 }
 
-//MARK:
-//MARK: UITableViewDataSource
+#pragma mark - UITableViewDataSource
 
 -(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
   if (section == kReservationSearchSection) {
@@ -310,8 +309,7 @@ static const NSInteger kNumberOfSections = 2;
   }
 }
 
-//MARK:
-//MARK: UITableViewDelegate
+#pragma mark - UITableViewDelegate
 
 -(NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
   return kNumberOfSections;
@@ -349,16 +347,16 @@ static const NSInteger kNumberOfSections = 2;
     [self setLocation];
     if (indexPath.row == kFromDateCellRow) {
       if (self.showToDate) {
-        [self toggleToDatePickerOrSetWith:nil];
+        [self toggleToDatePickerOrSetWith:false];
       } else if (self.showLocation) {
-        [self toggleToLocationPickerOrSetWith:nil];
+        [self toggleToLocationPickerOrSetWith:false];
       }
-      [self toggleFromDatePicker:nil];
+      [self toggleFromDatePicker:false];
     } else if (indexPath.row == kToDateCellRow) {
       if (self.showFromDate) {
-        [self toggleFromDatePicker:nil];
+        [self toggleFromDatePicker:false];
       } else if (self.showLocation) {
-        [self toggleToLocationPickerOrSetWith:nil];
+        [self toggleToLocationPickerOrSetWith:false];
       }
       [self toggleToDatePickerOrSetWith:nil];
     } else if (indexPath.row == kLocationCellRow || indexPath.row == kLocationCellPickerRow || indexPath.row == kNumberOfBedsCellRow || indexPath.row == kSearchButtonCellRow) {
@@ -408,8 +406,7 @@ static const NSInteger kNumberOfSections = 2;
   }
 }
 
-//MARK:
-//MARK: UIPickerViewDataSource
+#pragma mark - UIPickerViewDataSource
 
 -(NSInteger)pickerView:(UIPickerView *)pickerView numberOfRowsInComponent:(NSInteger)component {
   return self.locations.count + 1;
@@ -425,6 +422,8 @@ static const NSInteger kNumberOfSections = 2;
   }
   return self.locations[row - 1];
 }
+
+#pragma mark - Constraints
 
 -(void)setupConstraints {
   NSLayoutConstraint *fromDatePickerYLayoutContraint = [NSLayoutConstraint constraintWithItem:self.fromDatePicker attribute:NSLayoutAttributeCenterY relatedBy:NSLayoutRelationEqual toItem:self.fromDateCell attribute:NSLayoutAttributeCenterY multiplier:1 constant:0];

@@ -113,7 +113,7 @@
 //  [components setHour:23];
 //  [components setMinute:59];
 //  [components setSecond:59];
-  
+//  
 //  NSDate *endOfDay = [calendar dateFromComponents:components];
   
 //  NSPredicate *firstPredicate = [NSPredicate predicateWithFormat:@"startDate <= %@", endOfDay];
@@ -126,6 +126,15 @@
     return nil;
   }
   return reservations;
+}
+
+-(Guest *)fetchGuestByObjectID:(NSManagedObjectID *)managedObjectID {  
+  NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:@"Guest"];
+  NSPredicate *predicate = [NSPredicate predicateWithFormat:@"self == %@", managedObjectID];
+  fetchRequest.predicate = predicate;
+  NSArray *guests = [self.coreDataStack.managedObjectContext executeFetchRequest:fetchRequest error:nil];
+  
+  return guests[0];
 }
 
 @end

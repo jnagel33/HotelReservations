@@ -17,6 +17,7 @@
 #import "Room.h"
 #import "NoResultsTableViewCell.h"
 #import "GlobalConstants.h"
+#import "CoreDataStack.h"
 
 const int kCurrentReservationSectionIndex = 0;
 const int kPastReservationsSectionIndex = 1;
@@ -24,7 +25,7 @@ const int kPastReservationsSectionIndex = 1;
 @interface GuestReservationsTableViewController ()
 
 @property(strong,nonatomic)NSDateFormatter *dateFormatter;
-@property(strong,nonatomic)NSArray *reservations;
+@property(strong,nonatomic)NSMutableArray *reservations;
 
 @end
 
@@ -40,10 +41,30 @@ const int kPastReservationsSectionIndex = 1;
   
   [self.tableView registerClass:[MainDetailImageTableViewCell class] forCellReuseIdentifier:@"GuestDetailCell"];
   [self.tableView registerClass:[NoResultsTableViewCell class] forCellReuseIdentifier:@"NoResultsCell"];
-  
-  [self getSections];
+  [self getSelectedGuestReservations:nil];
 }
 
+-(void)viewDidAppear:(BOOL)animated {
+  [super viewDidAppear:animated];
+  [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(getSelectedGuestReservations:) name:@"DataChanged" object:nil];
+}
+
+-(void)viewDidDisappear:(BOOL)animated {
+  [super viewDidDisappear:animated];
+  [[NSNotificationCenter defaultCenter]removeObserver:self];
+}
+
+
+-(void)getSelectedGuestReservations:(NSNotification *)notification {
+  if (notification) {
+    AppDelegate *appDelegate = [UIApplication sharedApplication].delegate;
+    Guest *guest = [appDelegate.hotelService fetchGuestByObjectID:self.selectedGuest.objectID];
+    self.selectedGuest = guest;
+  }
+  self.reservations = nil;
+  [self getSections];
+  [self.tableView reloadData];
+}
 
 -(void)getSections {
   NSMutableArray *pastReservations = [[NSMutableArray alloc]init];
@@ -62,11 +83,10 @@ const int kPastReservationsSectionIndex = 1;
   }
   [reservations setObject:futureReservations atIndexedSubscript:kCurrentReservationSectionIndex];
   [reservations setObject:pastReservations atIndexedSubscript:kPastReservationsSectionIndex];
-  self.reservations  = reservations;
+  self.reservations = reservations;
 }
 
-//MARK:
-//MARK: UITableViewDataSource
+#pragma mark - UITableViewDataSource
 
 -(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
   if ([self.reservations[section] count] == 0) {
@@ -80,6 +100,7 @@ const int kPastReservationsSectionIndex = 1;
   NSArray *section = self.reservations[indexPath.section];
   if (section.count == 0) {
     NoResultsTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"NoResultsCell" forIndexPath:indexPath];
+    cell.mainLabel.text = nil;
     if (indexPath.section == kCurrentReservationSectionIndex) {
       cell.mainLabel.text = @"Guest has no current reservations";
     } else {
@@ -88,6 +109,9 @@ const int kPastReservationsSectionIndex = 1;
     return cell;
   } else {
     MainDetailImageTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"GuestDetailCell" forIndexPath:indexPath];
+    cell.mainLabel.text = nil;
+    cell.detailLabel.text = nil;
+    cell.mainImageView.image = nil;
     Reservation *reservation = section[indexPath.row];
     self.dateFormatter = [[NSDateFormatter alloc]init];
     self.dateFormatter.dateFormat = @"MMM dd";
@@ -95,7 +119,6 @@ const int kPastReservationsSectionIndex = 1;
     NSString *toDateStr = [self.dateFormatter stringFromDate:reservation.endDate];
     cell.mainLabel.text = [NSString stringWithFormat:@"Confirmation #%@",reservation.confirmationID];
     cell.detailLabel.text = [NSString stringWithFormat:@"%@ through %@", fromDateStr, toDateStr];
-    cell.mainImageView.image = nil;
     Room *room = reservation.room;
     if (room.actualImage == nil) {
       UIImage *roomImage = [UIImage imageWithData:room.image];
@@ -109,6 +132,8 @@ const int kPastReservationsSectionIndex = 1;
 -(NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
   return self.reservations.count;
 }
+
+#pragma mark - UITableViewDelegate
 
 -(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
   return kMainDetailImageTableViewCellHeight;

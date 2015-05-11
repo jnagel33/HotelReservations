@@ -30,4 +30,6 @@
 -(NSArray *)fetchTodaysReservations;
 
 -(void)deleteReservation:(Reservation *)reservation;
+
+-(Guest *)fetchGuestByObjectID:(NSManagedObjectID *)managedObjectID;
 @end

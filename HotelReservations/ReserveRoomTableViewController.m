@@ -144,8 +144,7 @@ static const CGFloat kTableViewOffsetBuffer = 100;
   }
 }
 
-//MARK:
-//MARK: UITableViewDataSource
+#pragma mark - UITableViewDataSource
 
 -(NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
   return 5;
@@ -256,8 +255,7 @@ static const CGFloat kTableViewOffsetBuffer = 100;
   }
 }
 
-//MARK:
-//MARK: UITableViewDelegate
+#pragma mark - UITableViewDelegate
 
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
   [self.tableView deselectRowAtIndexPath:indexPath animated:true];
@@ -335,7 +333,7 @@ static const CGFloat kTableViewOffsetBuffer = 100;
   return kNormalSectionHeaderHeight;
 }
 
-//MARK UITextFieldDelegate
+#pragma mark - UITextFieldDelegate
 
 -(BOOL)textFieldShouldReturn:(UITextField *)textField {
   [textField resignFirstResponder];
@@ -345,8 +343,7 @@ static const CGFloat kTableViewOffsetBuffer = 100;
   return true;
 }
 
-//MARK:
-//MARK: UIPickerViewDelagate
+#pragma mark - UIPickerViewDelagate
 
 -(NSInteger)pickerView:(UIPickerView *)pickerView numberOfRowsInComponent:(NSInteger)component {
   return self.guests.count + 1;
