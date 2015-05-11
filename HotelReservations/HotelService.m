@@ -81,7 +81,7 @@
 
 -(NSArray *)fetchAllGuests {
   NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:@"Guest"];
-  NSSortDescriptor *lastNameSortDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"lastName" ascending:true];
+  NSSortDescriptor *lastNameSortDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"lastName" ascending:true selector:@selector(caseInsensitiveCompare:)];
   fetchRequest.sortDescriptors = @[lastNameSortDescriptor];
   NSError *fetchError;
   NSArray *guests = [self.coreDataStack.managedObjectContext executeFetchRequest:fetchRequest error:&fetchError];
@@ -100,7 +100,6 @@
   }
 }
 
-
 -(NSArray *)fetchTodaysReservations {
   NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:@"Reservation"];
   NSSortDescriptor *startDateSortDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"startDate" ascending:true];
@@ -108,18 +107,11 @@
   NSCalendar *calendar = [NSCalendar currentCalendar];
   NSDate *date = [NSDate date];
   NSDate *startOfDay = [calendar startOfDayForDate:date];
-//  NSDateComponents *components = [calendar components:(  NSCalendarUnitMonth | NSCalendarUnitYear | NSCalendarUnitHour | NSCalendarUnitMinute | NSCalendarUnitSecond ) fromDate:date];
-//  
-//  [components setHour:23];
-//  [components setMinute:59];
-//  [components setSecond:59];
-//  
-//  NSDate *endOfDay = [calendar dateFromComponents:components];
-  
-//  NSPredicate *firstPredicate = [NSPredicate predicateWithFormat:@"startDate <= %@", endOfDay];
+  NSDate *tomorrow = [calendar dateByAddingUnit:NSCalendarUnitDay value:1 toDate:startOfDay options:0];
+  NSPredicate *firstPredicate = [NSPredicate predicateWithFormat:@"startDate <= %@", tomorrow];
   NSPredicate *secondPredicate = [NSPredicate predicateWithFormat:@"startDate >= %@", startOfDay];
-//  NSCompoundPredicate *compoundPredicate = [NSCompoundPredicate andPredicateWithSubpredicates:@[firstPredicate, secondPredicate]];
-  fetchRequest.predicate = secondPredicate;
+  NSCompoundPredicate *compoundPredicate = [NSCompoundPredicate andPredicateWithSubpredicates:@[firstPredicate, secondPredicate]];
+  fetchRequest.predicate = compoundPredicate;
   NSError *fetchError;
   NSArray *reservations = [self.coreDataStack.managedObjectContext executeFetchRequest:fetchRequest error:&fetchError];
   if (fetchError != nil) {

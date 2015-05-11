@@ -104,8 +104,10 @@
   } else {
     storeType = NSSQLiteStoreType;
   }
-  
-  NSDictionary *options = @{NSMigratePersistentStoresAutomaticallyOption : @true, NSInferMappingModelAutomaticallyOption : @true,NSPersistentStoreUbiquitousContentNameKey : @"ReservationsV2iCloud", NSPersistentStoreUbiquitousContentURLKey : [self cloudDirectory]};
+  NSDictionary *options = nil;
+  if (!self.isForTesting) {
+    options = @{NSMigratePersistentStoresAutomaticallyOption : @true, NSInferMappingModelAutomaticallyOption : @true,NSPersistentStoreUbiquitousContentNameKey : @"ReservationsV2iCloud", NSPersistentStoreUbiquitousContentURLKey : [self cloudDirectory]};
+  }
   
   if (![_persistentStoreCoordinator addPersistentStoreWithType:storeType configuration:nil URL:storeURL options:options error:&error]) {
     // Report any error we got.

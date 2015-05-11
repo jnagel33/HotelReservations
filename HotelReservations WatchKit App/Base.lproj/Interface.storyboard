@@ -25,7 +25,7 @@
                                             <imageView width="1" height="90" alignment="left" contentMode="scaleAspectFill" animationDuration="2" id="JH7-uf-fgN">
                                                 <color key="tintColor" red="0.08235294118" green="0.1137254902" blue="0.30588235289999999" alpha="1" colorSpace="calibratedRGB"/>
                                             </imageView>
-                                            <label width="1" alignment="left" text="Hotel -room" textAlignment="center" id="riL-oO-v1r"/>
+                                            <label width="1" alignment="left" text="Hotel -room" textAlignment="center" minimumScaleFactor="0.50000000000000011" id="riL-oO-v1r"/>
                                             <label width="1" alignment="left" text="Guest" textAlignment="center" id="K19-2n-Mnj">
                                                 <fontDescription key="font" style="UICTFontTextStyleBody"/>
                                             </label>
@@ -48,7 +48,7 @@
                     </connections>
                 </controller>
             </objects>
-            <point key="canvasLocation" x="235" y="347"/>
+            <point key="canvasLocation" x="235" y="346.5"/>
         </scene>
         <!--Glance Interface Controller-->
         <scene sceneID="BOz-TT-tkC">

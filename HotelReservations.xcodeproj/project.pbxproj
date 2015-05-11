@@ -268,7 +268,6 @@
 				430B305E1AFA8BFA006B416B /* Guest.h */,
 				430B305F1AFA8BFA006B416B /* Guest.m */,
 				435BD9011AF84DE80059CF7C /* seed.json */,
-				435BD8DC1AF83D540059CF7C /* HotelReservations.xcdatamodeld */,
 				435E487A1AFDEA0700D50A81 /* ImageResizer.h */,
 				435E487B1AFDEA0700D50A81 /* ImageResizer.m */,
 				43C7D3F31AFEDFDE00213618 /* RandomConfirmationIDGenerator.h */,
@@ -277,6 +276,7 @@
 				4328B4F01B001B58001A4307 /* GlobalConstants.m */,
 				4328B4F41B004D1F001A4307 /* HotelJSONParserService.h */,
 				4328B4F51B004D1F001A4307 /* HotelJSONParserService.m */,
+				435BD8DC1AF83D540059CF7C /* HotelReservations.xcdatamodeld */,
 			);
 			name = Model;
 			sourceTree = "<group>";

@@ -20,7 +20,6 @@
 
 @property(strong,nonatomic)NSArray *guests;
 
-
 @end
 
 @implementation GuestTableViewController
