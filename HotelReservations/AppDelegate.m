@@ -60,7 +60,7 @@
     NSString *fullNameStr = [NSString stringWithFormat:@"%@, %@", guest.lastName, guest.firstName];
     Room *room = reservation.room;
     NSNumber *roomNumber = [[NSNumber alloc]initWithInt:room.number];
-    NSDictionary *reservationInfo = @{@"room": roomNumber, @"guest": fullNameStr};
+    NSDictionary *reservationInfo = @{@"hotel": room.hotel.name, @"room": roomNumber, @"guest": fullNameStr, @"image":room.image};
     [reservationArray addObject:reservationInfo];
   }
   

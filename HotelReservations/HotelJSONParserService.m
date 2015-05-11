@@ -28,6 +28,7 @@
     newHotel.location = hotel[@"location"];
     NSNumber *starsNum = hotel[@"stars"];
     newHotel.stars = starsNum.intValue;
+    newHotel.createdTimeStamp = [[NSDate date]timeIntervalSince1970];
     NSArray *rooms = hotel[@"rooms"];
     for (NSDictionary *room in rooms) {
       Room *newRoom = [NSEntityDescription insertNewObjectForEntityForName:@"Room" inManagedObjectContext:coreDataStack.managedObjectContext];

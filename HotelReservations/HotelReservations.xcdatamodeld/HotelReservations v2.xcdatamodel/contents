@@ -7,6 +7,7 @@
     </entity>
     <entity name="Hotel" representedClassName="Hotel" syncable="YES">
         <attribute name="actualImage" optional="YES" transient="YES" attributeType="Transformable" syncable="YES"/>
+        <attribute name="createdTimeStamp" optional="YES" attributeType="Date" syncable="YES"/>
         <attribute name="image" optional="YES" attributeType="Binary" allowsExternalBinaryDataStorage="YES" syncable="YES"/>
         <attribute name="location" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="name" optional="YES" attributeType="String" syncable="YES"/>
@@ -31,7 +32,7 @@
     </entity>
     <elements>
         <element name="Guest" positionX="394" positionY="-133" width="128" height="88"/>
-        <element name="Hotel" positionX="-162" positionY="-144" width="128" height="133"/>
+        <element name="Hotel" positionX="-162" positionY="-144" width="128" height="148"/>
         <element name="Reservation" positionX="207" positionY="-130" width="128" height="120"/>
         <element name="Room" positionX="18" positionY="-144" width="128" height="148"/>
     </elements>

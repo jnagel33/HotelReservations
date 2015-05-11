@@ -108,18 +108,18 @@
   NSCalendar *calendar = [NSCalendar currentCalendar];
   NSDate *date = [NSDate date];
   NSDate *startOfDay = [calendar startOfDayForDate:date];
-  NSDateComponents *components = [calendar components:(  NSCalendarUnitMonth | NSCalendarUnitYear | NSCalendarUnitHour | NSCalendarUnitMinute | NSCalendarUnitSecond ) fromDate:date];
+//  NSDateComponents *components = [calendar components:(  NSCalendarUnitMonth | NSCalendarUnitYear | NSCalendarUnitHour | NSCalendarUnitMinute | NSCalendarUnitSecond ) fromDate:date];
+//  
+//  [components setHour:23];
+//  [components setMinute:59];
+//  [components setSecond:59];
   
-  [components setHour:23];
-  [components setMinute:59];
-  [components setSecond:59];
+//  NSDate *endOfDay = [calendar dateFromComponents:components];
   
-  NSDate *endOfDay = [calendar dateFromComponents:components];
-  
-  NSPredicate *firstPredicate = [NSPredicate predicateWithFormat:@"startDate <= %@", endOfDay];
+//  NSPredicate *firstPredicate = [NSPredicate predicateWithFormat:@"startDate <= %@", endOfDay];
   NSPredicate *secondPredicate = [NSPredicate predicateWithFormat:@"startDate >= %@", startOfDay];
-  NSCompoundPredicate *compoundPredicate = [NSCompoundPredicate andPredicateWithSubpredicates:@[firstPredicate, secondPredicate]];
-  fetchRequest.predicate = compoundPredicate;
+//  NSCompoundPredicate *compoundPredicate = [NSCompoundPredicate andPredicateWithSubpredicates:@[firstPredicate, secondPredicate]];
+  fetchRequest.predicate = secondPredicate;
   NSError *fetchError;
   NSArray *reservations = [self.coreDataStack.managedObjectContext executeFetchRequest:fetchRequest error:&fetchError];
   if (fetchError != nil) {

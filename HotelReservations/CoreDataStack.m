@@ -105,9 +105,9 @@
     storeType = NSSQLiteStoreType;
   }
   
-//  NSDictionary *options = @{NSMigratePersistentStoresAutomaticallyOption : @true, NSInferMappingModelAutomaticallyOption : @true,NSPersistentStoreUbiquitousContentNameKey : @"ReservationViCloud", NSPersistentStoreUbiquitousContentURLKey : [self cloudDirectory]};
+  NSDictionary *options = @{NSMigratePersistentStoresAutomaticallyOption : @true, NSInferMappingModelAutomaticallyOption : @true,NSPersistentStoreUbiquitousContentNameKey : @"ReservationsV2iCloud", NSPersistentStoreUbiquitousContentURLKey : [self cloudDirectory]};
   
-  if (![_persistentStoreCoordinator addPersistentStoreWithType:storeType configuration:nil URL:storeURL options:nil error:&error]) {
+  if (![_persistentStoreCoordinator addPersistentStoreWithType:storeType configuration:nil URL:storeURL options:options error:&error]) {
     // Report any error we got.
     NSMutableDictionary *dict = [NSMutableDictionary dictionary];
     dict[NSLocalizedDescriptionKey] = @"Failed to initialize the application's saved data";
@@ -154,29 +154,6 @@
   NSLog(@"%lu", (unsigned long)myHotels.count);
   if (myHotels.count == 0) {
     [HotelJSONParserService parseJSONFromSeedFile:self];
-//    NSString *filePath = [[NSBundle mainBundle]pathForResource:@"seed" ofType:@"json"];
-//    NSData *data = [NSData dataWithContentsOfFile:filePath];
-//    NSError *error;
-//    NSDictionary *jsonObject = [NSJSONSerialization JSONObjectWithData:data options:0 error:&error];
-//    NSArray *hotels = jsonObject[@"Hotels"];
-//    for (NSDictionary *hotel in hotels) {
-//      Hotel *newHotel = [NSEntityDescription insertNewObjectForEntityForName:@"Hotel" inManagedObjectContext:self.managedObjectContext];
-//      newHotel.name = hotel[@"name"];
-//      newHotel.location = hotel[@"location"];
-//      NSNumber *starsNum = hotel[@"stars"];
-//      newHotel.stars = starsNum.intValue;
-//      NSArray *rooms = hotel[@"rooms"];
-//      for (NSDictionary *room in rooms) {
-//        Room *newRoom = [NSEntityDescription insertNewObjectForEntityForName:@"Room" inManagedObjectContext:self.managedObjectContext];
-//        NSNumber *number = room[@"number"];
-//        newRoom.number = number.intValue;
-//        NSNumber *beds = room[@"beds"];
-//        newRoom.beds = beds.intValue;
-//        NSNumber *rate = room[@"rate"];
-//        newRoom.rate = rate.intValue;
-//        newRoom.hotel = newHotel;
-//      }
-//    }
     NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:@"Hotel"];
     NSError *fetchError;
     myHotels = [self.managedObjectContext executeFetchRequest:fetchRequest error:&fetchError];
@@ -307,7 +284,7 @@
   for (Hotel *duplicate in dupes) {
     if (prevHotel) {
       if ([duplicate.name isEqualToString:prevHotel.name]) {
-        if (duplicate.objectID < prevHotel.objectID) {
+        if (duplicate.createdTimeStamp > prevHotel.createdTimeStamp) {
           [self.managedObjectContext deleteObject:duplicate];
         } else {
           [self.managedObjectContext deleteObject:prevHotel];
@@ -319,149 +296,7 @@
     } else {
       prevHotel = duplicate;
     }
-  }
-//  //Rooms
-//  NSString *uniqueRoomIdentifier = @"number";
-//  keyPathExpression = [NSExpression expressionForKeyPath:uniqueRoomIdentifier];
-//  countExpression = [NSExpression expressionForFunction: @"count:" arguments:@[keyPathExpression]];
-//  [countExpressionDescription setExpression:countExpression];
-//  entity = [NSEntityDescription entityForName:@"Room" inManagedObjectContext:self.managedObjectContext];
-//  uniqueAttribute = [[entity attributesByName]objectForKey:uniqueRoomIdentifier];
-//  fetchRequest = [NSFetchRequest fetchRequestWithEntityName:@"Room"];
-//  [fetchRequest setPropertiesToFetch:@[uniqueAttribute, countExpressionDescription]];
-//  [fetchRequest setPropertiesToGroupBy:@[uniqueAttribute]];
-//  [fetchRequest setResultType:NSDictionaryResultType];
-//  fetchedDictionaries = [self.managedObjectContext executeFetchRequest:fetchRequest error:nil];
-//  NSMutableArray *roomsWithDupes = [NSMutableArray array];
-//  for (NSDictionary *dict in fetchedDictionaries) {
-//    NSNumber *count = dict[@"count"];
-//    if ([count integerValue] > 1) {
-//      [roomsWithDupes addObject:dict[@"number"]];
-//    }
-//  }
-//  
-//  dupeFetchRequest = [NSFetchRequest fetchRequestWithEntityName:@"Room"];
-//  [dupeFetchRequest setIncludesPendingChanges:false];
-//  predicate = [NSPredicate predicateWithFormat:@"number IN (%@)", roomsWithDupes];
-//  sortDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"number" ascending:true];
-//  [dupeFetchRequest setSortDescriptors:@[sortDescriptor]];
-//  [dupeFetchRequest setPredicate:predicate];
-//  dupes = [self.managedObjectContext executeFetchRequest:dupeFetchRequest error:nil];
-  
-//  
-//  Room *prevRoom;
-//  for (Room *duplicate in dupes) {
-//    if (prevRoom) {
-//      if (duplicate.number == prevRoom.number) {
-//        if (duplicate.objectID > prevRoom.objectID) {
-//          [self.managedObjectContext deleteObject:duplicate];
-//        } else {
-//          [self.managedObjectContext deleteObject:prevRoom];
-//          prevRoom = duplicate;
-//        }
-//      } else {
-//        prevRoom = duplicate;
-//      }
-//    } else {
-//      prevRoom = duplicate;
-//    }
-//  }
-//  //Guest
-//  NSString *uniqueGuestIdentifier = @"lastName";
-//  keyPathExpression = [NSExpression expressionForKeyPath:uniqueGuestIdentifier];
-//  countExpression = [NSExpression expressionForFunction: @"count:" arguments:@[keyPathExpression]];
-//  [countExpressionDescription setExpression:countExpression];
-//  entity = [NSEntityDescription entityForName:@"Guest" inManagedObjectContext:self.managedObjectContext];
-//  uniqueAttribute = [[entity attributesByName]objectForKey:uniqueGuestIdentifier];
-//  fetchRequest = [NSFetchRequest fetchRequestWithEntityName:@"Guest"];
-//  [fetchRequest setPropertiesToFetch:@[uniqueAttribute, countExpressionDescription]];
-//  [fetchRequest setPropertiesToGroupBy:@[uniqueAttribute]];
-//  [fetchRequest setResultType:NSDictionaryResultType];
-//  fetchedDictionaries = [self.managedObjectContext executeFetchRequest:fetchRequest error:nil];
-//  NSMutableArray *guestsWithDupes = [NSMutableArray array];
-//  for (NSDictionary *dict in fetchedDictionaries) {
-//    NSNumber *count = dict[@"count"];
-//    if ([count integerValue] > 1) {
-//      [guestsWithDupes addObject:dict[@"lastName"]];
-//    }
-//  }
-//  
-//  dupeFetchRequest = [NSFetchRequest fetchRequestWithEntityName:@"Guest"];
-//  [dupeFetchRequest setIncludesPendingChanges:false];
-//  predicate = [NSPredicate predicateWithFormat:@"lastName IN (%@)", guestsWithDupes];
-//  sortDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"lastName" ascending:true];
-//  [dupeFetchRequest setSortDescriptors:@[sortDescriptor]];
-//  [dupeFetchRequest setPredicate:predicate];
-//  dupes = [self.managedObjectContext executeFetchRequest:dupeFetchRequest error:nil];
-//  
-//  
-//  Guest *prevGuest;
-//  for (Guest *duplicate in dupes) {
-//    if (prevGuest) {
-//      if ([duplicate.lastName isEqualToString:prevGuest.lastName]) {
-//        if (duplicate.objectID > prevGuest.objectID) {
-//          [self.managedObjectContext deleteObject:duplicate];
-//        } else {
-//          [self.managedObjectContext deleteObject:prevGuest];
-//          prevGuest = duplicate;
-//        }
-//      } else {
-//        prevGuest = duplicate;
-//      }
-//    } else {
-//      prevGuest = duplicate;
-//    }
-//  }
-
-  //Reservation
-//  NSString *uniqueReservationIdentifier = @"confirmationID";
-//  keyPathExpression = [NSExpression expressionForKeyPath:uniqueReservationIdentifier];
-//  countExpression = [NSExpression expressionForFunction: @"count:" arguments:@[keyPathExpression]];
-//  [countExpressionDescription setExpression:countExpression];
-//  entity = [NSEntityDescription entityForName:@"Reservation" inManagedObjectContext:self.managedObjectContext];
-//  uniqueAttribute = [[entity attributesByName]objectForKey:uniqueReservationIdentifier];
-//  fetchRequest = [NSFetchRequest fetchRequestWithEntityName:@"Reservation"];
-//  [fetchRequest setPropertiesToFetch:@[uniqueAttribute, countExpressionDescription]];
-//  [fetchRequest setPropertiesToGroupBy:@[uniqueAttribute]];
-//  [fetchRequest setResultType:NSDictionaryResultType];
-//  fetchedDictionaries = [self.managedObjectContext executeFetchRequest:fetchRequest error:nil];
-//  NSMutableArray *reservationsWithDupes = [NSMutableArray array];
-//  for (NSDictionary *dict in fetchedDictionaries) {
-//    NSNumber *count = dict[@"count"];
-//    if ([count integerValue] > 1) {
-//      [reservationsWithDupes addObject:dict[@"confirmationID"]];
-//    }
-//  }
-//  
-//  dupeFetchRequest = [NSFetchRequest fetchRequestWithEntityName:@"Reservation"];
-//  [dupeFetchRequest setIncludesPendingChanges:false];
-//  predicate = [NSPredicate predicateWithFormat:@"confirmationID IN (%@)", reservationsWithDupes];
-//  sortDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"confirmationID" ascending:true];
-//  [dupeFetchRequest setSortDescriptors:@[sortDescriptor]];
-//  [dupeFetchRequest setPredicate:predicate];
-//  dupes = [self.managedObjectContext executeFetchRequest:dupeFetchRequest error:nil];
-//  
-//  
-//  Reservation *prevReservation;
-//  for (Reservation *duplicate in dupes) {
-//    if (prevReservation) {
-//      if ([duplicate.confirmationID isEqualToString:prevReservation.confirmationID] == NSOrderedSame) {
-//        if (duplicate.objectID < prevReservation.objectID) {
-//          [self.managedObjectContext deleteObject:duplicate.room];
-//          [self.managedObjectContext deleteObject:duplicate];
-//        } else {
-//          [self.managedObjectContext deleteObject:duplicate.room];
-//          [self.managedObjectContext deleteObject:prevReservation];
-//          prevReservation = duplicate;
-//        }
-//      } else {
-//        prevReservation = duplicate;
-//      }
-//    } else {
-//      prevReservation = duplicate;
-//    }
-//  }
-  
+  }  
   [self.managedObjectContext save:nil];
 }
 
